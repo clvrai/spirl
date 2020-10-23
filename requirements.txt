@@ -1,0 +1,20 @@
+# core
+numpy
+matplotlib
+pillow
+h5py
+scikit-image
+funcsigs
+opencv-python
+moviepy
+torch
+torchvision
+tensorboard
+tensorboardX
+gym==0.15.4
+pandas
+
+# RL
+wandb
+mpi4py
+

@@ -1,0 +1,25 @@
+<mujoco model="gripper_only_robot">
+  <actuator>
+    <motor joint="slide_x" gear="500" />
+    <motor joint="slide_y" gear="500" />
+    <motor joint="slide_z" gear="500" />
+    <motor joint="rotate_z" gear="500" />
+  </actuator>
+  <asset>
+  </asset>
+  <worldbody>
+    <body name="base" pos="0 0 0">
+      <joint name="slide_x" type="slide" axis="1 0 0" range="-1.5 1.5" damping="1000" />
+      <joint name="slide_y" type="slide" axis="0 1 0" range="-1.5 1.5" damping="1000" />
+      <joint name="slide_z" type="slide" axis="0 0 1" range="0 5" damping="1000" />
+      <joint name="rotate_z" type="hinge" axis="0 0 1" range="-31.4 31.4" damping="1000" />
+
+      <body name="rotation_adjustment" pos="0 0 0" quat="0.7071 0 0 0.7071">
+        <geom name="arm" type="box" size=".05 .05 .1" pos="0 0 0.1" contype="3" conaffinity="3"/>
+        <body name="hand" pos="0 0 0" quat="0 0.7071 0.7071 0">
+          <!-- To add gripper -->
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>
