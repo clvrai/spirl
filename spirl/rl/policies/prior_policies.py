@@ -94,7 +94,7 @@ class LearnedPriorAugmentedPolicy(PriorAugmentedPolicy):
             'prior_model_epoch': 'latest',    # epoch that checkpoint should be loaded for (defaults to latest)
             'prior_batch_size': -1,           # optional: use separate batch size for prior network
             'reverse_KL': False,              # if True, computes KL[q||p] instead of KL[p||q] (can be more stable to opt)
-            'analytic_KL': True,              # if True, computes KL divergence analytically, otherwise sampling based
+            'analytic_KL': False,             # if True, computes KL divergence analytically, otherwise sampling based
             'num_mc_samples': 10,             # number of samples for monte-carlo KL estimate
         })
         return super()._default_hparams().overwrite(default_dict)
