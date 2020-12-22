@@ -2,7 +2,7 @@
 numpy
 matplotlib
 pillow
-h5py
+h5py==2.10.0
 scikit-image
 funcsigs
 opencv-python
