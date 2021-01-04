@@ -117,9 +117,7 @@ class UnitGaussian(Gaussian):
 
 class MultivariateGaussian(Gaussian):
     def log_prob(self, val):
-        log_prob = super().log_prob(val).sum(-1)
-        return torch.clamp(log_prob, min=-20, max=10) if isinstance(log_prob, torch.Tensor) else \
-                                            np.clip(log_prob, a_min=-20, a_max=10)
+        return super().log_prob(val).sum(-1)
 
     @staticmethod
     def stack(*argv, dim):
