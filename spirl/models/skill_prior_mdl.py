@@ -216,7 +216,7 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
                 def __init__(self, hp):
                     super().__init__()
                     self._hp = hp
-                    self.val = torch.zeros((1, size), requires_grad=True, device=self._hp.device)
+                    self.val = nn.Parameter(torch.zeros((1, size), requires_grad=True, device=self._hp.device))
 
                 def forward(self, state):
                     return self.val.repeat(find_tensor(state).shape[0], 1)
