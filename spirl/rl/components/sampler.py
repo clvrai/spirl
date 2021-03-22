@@ -170,7 +170,7 @@ class HierarchicalSampler(Sampler):
                             ))
 
                         # store HL experience batch if this was HL action or episode is done
-                        if agent_output.is_hl_step or (done or self._episode_step >= self._max_episode_len):
+                        if agent_output.is_hl_step or (done or self._episode_step >= self._max_episode_len-1):
                             if self.last_hl_obs is not None and self.last_hl_action is not None:
                                 hl_experience_batch.append(AttrDict(
                                     observation=self.last_hl_obs,

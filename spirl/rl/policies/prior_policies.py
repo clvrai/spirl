@@ -110,9 +110,9 @@ class LearnedPriorAugmentedPolicy(PriorAugmentedPolicy):
         """Analytic KL divergence between two Gaussian distributions."""
         assert isinstance(prior_dist, MultivariateGaussian) and isinstance(policy_output.dist, MultivariateGaussian)
         if self._hp.reverse_KL:
-            return prior_dist.kl_divergence(policy_output.dist).mean(dim=-1)
+            return prior_dist.kl_divergence(policy_output.dist).sum(dim=-1)
         else:
-            return policy_output.dist.kl_divergence(prior_dist).mean(dim=-1)
+            return policy_output.dist.kl_divergence(prior_dist).sum(dim=-1)
 
     def _mc_divergence(self, policy_output, prior_dist):
         """Monte-Carlo KL divergence estimate."""

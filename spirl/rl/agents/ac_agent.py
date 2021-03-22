@@ -11,7 +11,7 @@ from spirl.rl.utils.mpi import sync_networks
 class ACAgent(BaseAgent):
     """Implements actor-critic agent. (does not implement update function, this should be handled by RL algo agent)"""
     def __init__(self, config):
-        super().__init__(config)
+        BaseAgent.__init__(self, config)
         self._hp = self._default_hparams().overwrite(config)
         self.policy = self._hp.policy(self._hp.policy_params)
         if self.policy.has_trainable_params:
@@ -55,6 +55,9 @@ class ACAgent(BaseAgent):
         super().visualize(logger, rollout_storage, step)
         self.policy.visualize(logger, rollout_storage, step)
 
+    def reset(self):
+        self.policy.reset()
+
     def sync_networks(self):
         if self.policy.has_trainable_params:
             sync_networks(self.policy)
@@ -67,7 +70,7 @@ class ACAgent(BaseAgent):
 class SACAgent(ACAgent):
     """Implements SAC algorithm."""
     def __init__(self, config):
-        super().__init__(config)
+        ACAgent.__init__(self, config)
         self._hp = self._default_hparams().overwrite(config)
 
         # build critics and target networks, copy weights of critics to target networks
@@ -80,7 +83,7 @@ class SACAgent(ACAgent):
 
         # define entropy multiplier alpha
         self._log_alpha = TensorModule(torch.zeros(1, requires_grad=True, device=self._hp.device))
-        self.alpha_opt = self._get_optimizer(self._hp.optimizer, self._log_alpha, self._hp.policy_lr)
+        self.alpha_opt = self._get_optimizer(self._hp.optimizer, self._log_alpha, self._hp.alpha_lr)
         self._target_entropy = self._hp.target_entropy if self._hp.target_entropy is not None \
                                         else -1 * self._hp.policy_params.action_dim
 
@@ -96,6 +99,7 @@ class SACAgent(ACAgent):
             'replay': None,           # replay buffer class
             'replay_params': None,    # parameters for replay buffer
             'critic_lr': 3e-4,        # learning rate for critic update
+            'alpha_lr': 3e-4,         # learning rate for alpha coefficient update
             'reward_scale': 1.0,      # SAC reward scale
             'clip_q_target': False,   # if True, clips Q target
             'target_entropy': None,   # target value for automatic entropy tuning, if None uses -action_dim
@@ -105,22 +109,19 @@ class SACAgent(ACAgent):
     def update(self, experience_batch):
         """Updates actor and critics."""
         # push experience batch into replay buffer
-        self.replay_buffer.append(experience_batch)
-        self._obs_normalizer.update(experience_batch.observation)
+        self.add_experience(experience_batch)
 
         for _ in range(self._hp.update_iterations):
             # sample batch and normalize
-            experience_batch = self.replay_buffer.sample(n_samples=self._hp.batch_size)
-            experience_batch.observation = self._obs_normalizer(experience_batch.observation)
-            experience_batch.observation_next = self._obs_normalizer(experience_batch.observation_next)
+            experience_batch = self._sample_experience()
+            experience_batch = self._normalize_batch(experience_batch)
             experience_batch = map2torch(experience_batch, self._hp.device)
             experience_batch = self._preprocess_experience(experience_batch)
 
             policy_output = self._run_policy(experience_batch.observation)
 
             # update alpha
-            alpha_loss = self._compute_alpha_loss(policy_output)
-            self._perform_update(alpha_loss, self.alpha_opt, self._log_alpha)
+            alpha_loss = self._update_alpha(experience_batch, policy_output)
 
             # compute policy loss
             policy_loss = self._compute_policy_loss(experience_batch, policy_output)
@@ -137,12 +138,7 @@ class SACAgent(ACAgent):
                 check_shape(q_target, [self._hp.batch_size])
 
             # compute critic loss
-            qs = self._compute_q_estimates(experience_batch)
-            check_shape(qs[0], [self._hp.batch_size])
-            critic_losses = [0.5 * (q - q_target).pow(2).mean() for q in qs]
-
-            # update policy network on policy loss
-            self._perform_update(policy_loss, self.policy_opt, self.policy)
+            critic_losses, qs = self._compute_critic_loss(experience_batch, q_target)
 
             # update critic networks
             [self._perform_update(critic_loss, critic_opt, critic)
@@ -151,6 +147,9 @@ class SACAgent(ACAgent):
             # update target networks
             [self._soft_update_target_network(critic_target, critic)
                     for critic_target, critic in zip(self.critic_targets, self.critics)]
+
+            # update policy network on policy loss
+            self._perform_update(policy_loss, self.policy_opt, self.policy)
 
             # logging
             info = AttrDict(    # losses
@@ -179,13 +178,29 @@ class SACAgent(ACAgent):
             return info
 
     def add_experience(self, experience_batch):
-        """Adds experience to replay buffer (used during warmup)."""
+        """Adds experience to replay buffer."""
+        if not experience_batch:
+            return  # pass if experience_batch is empty
         self.replay_buffer.append(experience_batch)
         self._obs_normalizer.update(experience_batch.observation)
+
+    def _sample_experience(self):
+        return self.replay_buffer.sample(n_samples=self._hp.batch_size)
+
+    def _normalize_batch(self, experience_batch):
+        """Optionally apply observation normalization."""
+        experience_batch.observation = self._obs_normalizer(experience_batch.observation)
+        experience_batch.observation_next = self._obs_normalizer(experience_batch.observation_next)
+        return experience_batch
 
     def _run_policy(self, obs):
         """Allows child classes to post-process policy outputs."""
         return self.policy(obs)
+
+    def _update_alpha(self, experience_batch, policy_output):
+        alpha_loss = self._compute_alpha_loss(policy_output)
+        self._perform_update(alpha_loss, self.alpha_opt, self._log_alpha)
+        return alpha_loss
 
     def _compute_alpha_loss(self, policy_output):
         self._update_steps += 1
@@ -204,6 +219,12 @@ class SACAgent(ACAgent):
         next_val = (q_next - self.alpha * policy_output.log_prob[:, None])
         check_shape(next_val, [self._hp.batch_size, 1])
         return next_val.squeeze(-1)
+
+    def _compute_critic_loss(self, experience_batch, q_target):
+        qs = self._compute_q_estimates(experience_batch)
+        check_shape(qs[0], [self._hp.batch_size])
+        critic_losses = [0.5 * (q - q_target).pow(2).mean() for q in qs]
+        return critic_losses, qs
 
     def _compute_q_estimates(self, experience_batch):
         return [critic(experience_batch.observation, self._prep_action(experience_batch.action.detach())).q.squeeze(-1)

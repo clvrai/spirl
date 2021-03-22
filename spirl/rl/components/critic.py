@@ -1,9 +1,10 @@
-import torch.nn as nn
 import torch
+import torch.nn as nn
+import copy
 
 from spirl.utils.general_utils import ParamDict, AttrDict
 from spirl.modules.layers import LayerBuilderParams
-from spirl.modules.subnetworks import Encoder, Predictor, HybridConvMLPEncoder, IBPredictor
+from spirl.modules.subnetworks import Encoder, Predictor, HybridConvMLPEncoder
 
 
 class Critic(nn.Module):
@@ -74,7 +75,7 @@ class ConvCritic(MLPCritic):
         return super()._default_hparams().overwrite(default_dict)
 
     def _build_network(self):
-        return HybridConvMLPEncoder(self._hp.overwrite(AttrDict(input_dim=self._hp.action_dim)))
+        return HybridConvMLPEncoder(copy.deepcopy(self._hp).overwrite(AttrDict(input_dim=self._hp.action_dim)))
 
     def forward(self, obs, actions):
         split_obs = AttrDict(
