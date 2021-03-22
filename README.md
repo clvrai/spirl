@@ -15,6 +15,10 @@
 This is the official PyTorch implementation of the paper "**Accelerating Reinforcement Learning with Learned Skill Priors**"
 (CoRL 2020).
 
+## Updates
+- **[Mar 2021]**: added an improved version of SPiRL with closed-loop skill decoder 
+(see [example commands](spirl/configs/skill_prior_learning/kitchen/hierarchical_cl/README.md))
+
 ## Requirements
 
 - python 3.7+
