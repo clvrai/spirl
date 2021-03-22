@@ -1,6 +1,6 @@
 # SPiRL w/ Closed-Loop Skill Decoder
 
-This version of the SPiRL model uses a [closed-loop action decoder](spirl/models/closed_loop_spirl_mdl.py): 
+This version of the SPiRL model uses a [closed-loop action decoder](../../../../models/closed_loop_spirl_mdl.py): 
 in contrast to the original SPiRL model it takes the current environment state as input in every skill decoding step. 
 
 We find that this model improves performance over the original
@@ -15,7 +15,7 @@ python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/hierarc
 ```
 Our current implementation of the closed-loop SPiRL model only supports state-based inputs, but an extension to
 image observations is straightforward analogous to how we adapted the 
-original SPiRL model for [image inputs](spirl/models/skill_prior_mdl.py#L321).
+original SPiRL model for [image inputs](../../../../models/skill_prior_mdl.py#L321).
 
 To train a downstream task policy with RL using the closed-loop SPiRL model we just trained, run the following command:
 ```
