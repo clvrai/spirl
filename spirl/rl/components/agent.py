@@ -135,8 +135,6 @@ class BaseAgent(nn.Module):
         nan_hook(loss)
         opt.zero_grad()
         loss.backward()
-        if self._hp.num_workers > 1:
-            sync_grads(network)
 
         grads = [p.grad for p in network.parameters()]
         nan_hook(grads)

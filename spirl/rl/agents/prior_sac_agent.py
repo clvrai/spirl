@@ -9,7 +9,7 @@ from spirl.utils.pytorch_utils import check_shape, map2torch
 class ActionPriorSACAgent(SACAgent):
     """Implements SAC with non-uniform, learned action / skill prior."""
     def __init__(self, config):
-        super().__init__(config)
+        SACAgent.__init__(self, config)
         self._target_divergence = self._hp.td_schedule(self._hp.td_schedule_params)
 
     def _default_hparams(self):

@@ -67,6 +67,9 @@ class Policy(nn.Module):
                 # assumes symmetric action range
             )
 
+    def reset(self):
+        pass
+
     def switch_to_val(self):
         self._is_train = False
 
