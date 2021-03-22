@@ -7,7 +7,7 @@ We find that this model improves performance over the original
 SPiRL model, particularly on tasks that require precise control, like in the kitchen environment.
 
 <p align="center">
-<img src="docs/resources/kitchen_results_cl.png" width="400">
+<img src="../../../../../docs/resources/kitchen_results_cl.png" width="400">
 </p>
 </img>
 
