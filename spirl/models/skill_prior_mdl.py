@@ -122,7 +122,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         assert self._regression_targets(inputs).shape[1] == self._hp.n_rollout_steps
         output.reconstruction = self.decode(output.z,
                                             cond_inputs=self._learned_prior_input(inputs),
-                                            steps=self._hp.n_rollout_steps)
+                                            steps=self._hp.n_rollout_steps,
+                                            inputs=inputs)
         return output
 
     def loss(self, model_output, inputs):
@@ -161,7 +162,7 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
             print('{} {}: logging videos'.format(phase, step))
             self._logger.visualize(model_output, inputs, losses, step, phase, logger, **logging_kwargs)
 
-    def decode(self, z, cond_inputs, steps):
+    def decode(self, z, cond_inputs, steps, inputs=None):
         """Runs forward pass of decoder given skill embedding.
         :arg z: skill embedding
         :arg cond_inputs: info that decoder is conditioned on
