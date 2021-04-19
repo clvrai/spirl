@@ -7,10 +7,10 @@ scikit-image
 funcsigs
 opencv-python
 moviepy
-torch
-torchvision
-tensorboard
-tensorboardX
+torch==1.3.1
+torchvision==0.4.2
+tensorboard==2.1.1
+tensorboardX==2.0
 gym==0.15.4
 pandas
 
@@ -18,3 +18,5 @@ pandas
 wandb
 mpi4py
 
+# Block Stacking
+# mujoco_py==2.0.2.9
