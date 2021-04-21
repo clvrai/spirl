@@ -1,3 +1,20 @@
+## Downloading Datasets via the Command Line
+
+To download the dataset files from Google Drive via the command line, you can use the 
+[gdown](https://github.com/wkentaro/gdown) package. Install it with:
+```
+pip install gdown
+```
+
+Then navigate to the folder you want to download the data to and run the following commands:
+```
+# Download Maze Dataset
+gdown https://drive.google.com/uc?id=1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ
+
+# Download Block Stacking Dataset
+gdown https://drive.google.com/uc?id=1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M
+``` 
+
 ## Re-Generating Datasets
 
 ### Maze Dataset

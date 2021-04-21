@@ -211,7 +211,8 @@ themselves are version controllable.
 | Maze | [https://drive.google.com/file/d/1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ/view?usp=sharing](https://drive.google.com/file/d/1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ/view?usp=sharing) | 12GB |
 | Block Stacking |[https://drive.google.com/file/d/1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M/view?usp=sharing](https://drive.google.com/file/d/1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M/view?usp=sharing)| 11GB|
 
-You can download the datasets used for the experiments in the paper above. 
+You can download the datasets used for the experiments in the paper with the links above. 
+To download the data via the command line, see example commands [here](spirl/data/).
 
 If you want to generate more data 
 or make other modifications to the data generating procedure, we provide instructions for regenerating the 
