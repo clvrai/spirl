@@ -81,7 +81,7 @@ class ModelTrainer(BaseTrainer):
             'logger_test': None,
             'evaluator': None,
             'data_dir': None,  # directory where dataset is in
-            'batch_size': 16,
+            'batch_size': 128,
             'exp_path': None,  # Path to the folder with experiments
             'num_epochs': 200,
             'epoch_cycles_train': 1,
