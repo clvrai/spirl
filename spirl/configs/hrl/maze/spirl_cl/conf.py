@@ -82,7 +82,7 @@ ll_critic_params = AttrDict(
     input_dim=data_spec.state_dim,
     output_dim=1,
     action_input=True,
-    unused_obs_size=ll_model_params.nz_vae,     # ignore HL policy z output in observation for LL critic
+    unused_obs_size=10,     # ignore HL policy z output in observation for LL critic
 )
 
 # LL Agent

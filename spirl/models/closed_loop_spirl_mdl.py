@@ -16,7 +16,7 @@ class ClSPiRLMdl(SkillPriorMdl):
         self.q = self._build_inference_net()
         self.decoder = Predictor(self._hp,
                                  input_size=self.enc_size + self._hp.nz_vae,
-                                 output_size=self.decode_size,
+                                 output_size=self._hp.action_dim,
                                  mid_size=self._hp.nz_mid_prior)
         self.p = self._build_prior_ensemble()
         self.log_sigma = get_constant_parameter(0, learnable=False)
