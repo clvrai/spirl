@@ -79,3 +79,13 @@ class ClModelPolicy(Policy):
     @property
     def horizon(self):
         return self._hp.policy_model_params.n_rollout_steps
+
+
+class ACClModelPolicy(ClModelPolicy):
+    """Handles image observations in ClModelPolicy."""
+    def _split_obs(self, obs):
+        unflattened_obs = self.net.unflatten_obs(obs[:, :-self.net.latent_dim])
+        return AttrDict(
+            cond_input=self.net.enc_obs(unflattened_obs.prior_obs),
+            z=obs[:, -self.net.latent_dim:],
+        )

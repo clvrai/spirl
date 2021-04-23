@@ -70,3 +70,34 @@ class MazeNoUpdateAgent(MazeAgent, SACAgent):
     def update(self, experience_batch):
         self.replay_buffer.append(experience_batch)
         return {}
+
+
+class MazeACActionPriorSACAgent(ActionPriorSACAgent, MazeAgent):
+    def __init__(self, *args, **kwargs):
+        ActionPriorSACAgent.__init__(self, *args, **kwargs)
+        from spirl.rl.components.replay_buffer import SplitObsUniformReplayBuffer
+        # TODO: don't hardcode this for res 32x32
+        self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
+
+    def update(self, experience_batch):
+        self.vis_replay_buffer.append(experience_batch)
+        return ActionPriorSACAgent.update(self, experience_batch)
+
+    def visualize(self, logger, rollout_storage, step):
+        self._vis_replay_buffer(logger, step)
+        ActionPriorSACAgent.visualize(self, logger, rollout_storage, step)
+
+    def _vis_replay_buffer(self, logger, step):
+        """Visualizes maze trajectories from replay buffer (if step < replay capacity)."""
+        if step > self.replay_buffer.capacity:
+            return   # visualization does not work if earlier samples were overridden
+
+        # get data
+        size = self.vis_replay_buffer.size
+        states = self.vis_replay_buffer.get().observation[:size, :2]
+
+        fig = plt.figure()
+        plt.scatter(states[:, 0], states[:, 1], s=5, c=np.arange(size), cmap='Blues')
+        plt.axis("equal")
+        logger.log_plot(fig, "replay_vis", step)
+        plt.close(fig)
