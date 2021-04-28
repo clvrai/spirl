@@ -16,6 +16,8 @@ This is the official PyTorch implementation of the paper "**Accelerating Reinfor
 (CoRL 2020).
 
 ## Updates
+- **[Apr 2021]**: extended improved SPiRL version to support image-based observations 
+(see [example commands](spirl/configs/skill_prior_learning/block_stacking/hierarchical_cl/README.md))
 - **[Mar 2021]**: added an improved version of SPiRL with closed-loop skill decoder 
 (see [example commands](spirl/configs/skill_prior_learning/kitchen/hierarchical_cl/README.md))
 
