@@ -969,6 +969,13 @@ class SparseHighStackBlockStackEnv(NoOrderBlockStackEnv):
     """Simple reward function that just rewards the highest stacked tower."""
     REWARD_SCALE = 1.0
 
+    def _default_hparams(self):
+        return super()._default_hparams().overwrite(ParamDict({
+            'restrict_upright': True,       # if True, requires block to be stacked upright to get reward
+            'restrict_grasped': False,      # if True, requires block to be grasped before stacking to get reward
+            'rotation_penalty': False,      # if True, adds penalty for rotated blocks
+        }))
+
     def _reset_internal(self, keep_sim_object=False):
         super()._reset_internal(keep_sim_object)
         self._final_height = 0.
