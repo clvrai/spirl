@@ -963,3 +963,72 @@ class HighStackBlockStackEnv(NoOrderBlockStackEnv):
     def _has_support(self, block, others):
         return not block.lifted or any([block.stacked_on_loose(b) and self._has_support(b, [bb for bb in others if b.name != bb.name])
                     for b in others])
+
+
+class SparseHighStackBlockStackEnv(NoOrderBlockStackEnv):
+    """Simple reward function that just rewards the highest stacked tower."""
+    REWARD_SCALE = 1.0
+
+    def _default_hparams(self):
+        return super()._default_hparams().overwrite(ParamDict({
+            'restrict_upright': True,       # if True, requires block to be stacked upright to get reward
+            'restrict_grasped': False,      # if True, requires block to be grasped before stacking to get reward
+            'rotation_penalty': False,      # if True, adds penalty for rotated blocks
+        }))
+
+    def _reset_internal(self, keep_sim_object=False):
+        super()._reset_internal(keep_sim_object)
+        self._final_height = 0.
+
+    def get_episode_info(self):
+        ep_info = super().get_episode_info()
+        ep_info.final_height = self._final_height
+        return ep_info
+
+    def _get_reward(self):
+        """Compute reward for stacking blocks without order."""
+        rew_dict = AttrDict()
+
+        max_height = 0.
+        heights, supported_heights = np.zeros(len(self._blocks)), np.zeros(len(self._blocks))
+        for i, block in enumerate(self._blocks):
+            height = block.dist_lifted
+            heights[i] = height
+
+            # set flags
+            if not self._grasped_flag[i]:
+                self._grasped_flag[i] = block.grasped(self.gripper_pos, self.gripper_finger_dist,
+                                                      self.gripper_finger_poses)
+            if not self._lifted_flag[i]:
+                self._lifted_flag[i] = (not self._hp.restrict_grasped or self._grasped_flag[i]) and \
+                                       (not self._hp.restrict_upright or block.upright) and block.lifted
+            if not self._delivered_flag[i]:
+                self._delivered_flag[i] = (not self._hp.restrict_grasped or self._grasped_flag[i]) \
+                                          and (not self._hp.restrict_upright or block.upright) \
+                                          and any([block.above(b) for b in self._blocks if b.name != block.name])
+
+            # compute reward
+            if (not self._hp.restrict_grasped or self._grasped_flag[i]) and \
+                    (not self._hp.restrict_upright or block.upright) and \
+                    self._has_support(block, [b for b in self._blocks if block.name != b.name]):
+                self._stacked_flag[i] = True
+                supported_heights[i] = height
+                if height > max_height:
+                    max_height = height
+        self._final_height = max_height / (2 * self._hp.block_size)
+
+        total_rew = max_height * self.REWARD_SCALE
+
+        rew_dict["heights"] = heights.round(3)
+        rew_dict["sup_heights"] = supported_heights.round(3)
+        rew_dict["rew_total"] = np.array(total_rew).round(3)
+        rew_dict["max_height"] = np.array(self._final_height).round(3)
+
+        self._prev_block_pos = [copy.deepcopy(b.pos) for b in self._blocks]  # update for next round of reward comp
+        self._prev_gripper_pos = copy.deepcopy(self.gripper_pos)
+
+        return rew_dict
+
+    def _has_support(self, block, others):
+        return not block.lifted or any([block.stacked_on_loose(b) and self._has_support(b, [bb for bb in others if b.name != bb.name])
+                    for b in others])

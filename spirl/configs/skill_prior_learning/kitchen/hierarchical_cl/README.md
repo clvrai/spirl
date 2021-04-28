@@ -11,15 +11,15 @@ SPiRL model, particularly on tasks that require precise control, like in the kit
 </p>
 </img>
 
+For an implementation of the closed-loop SPiRL model that supports image observations, 
+see [here](../../block_stacking/hierarchical_cl/README.md).
+
 ## Example Commands
 
 To train the SPiRL model with closed-loop action decoder on the kitchen environment, run the following command:
 ```
 python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/hierarchical_cl --val_data_size=160
 ```
-Our current implementation of the closed-loop SPiRL model only supports state-based inputs, but an extension to
-image observations is straightforward analogous to how we adapted the 
-original SPiRL model for [image inputs](../../../../models/skill_prior_mdl.py#L321).
 
 To train a downstream task policy with RL using the closed-loop SPiRL model we just trained, run the following command:
 ```

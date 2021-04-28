@@ -3,7 +3,7 @@ import numpy as np
 from spirl.rl.components.environment import GymEnv
 from spirl.utils.general_utils import AttrDict, ParamDict
 from spirl.data.block_stacking.src.block_stacking_env import BlockStackEnv as UnwrappedBlockStackEnv
-from spirl.data.block_stacking.src.block_stacking_env import NoOrderBlockStackEnv, HighStackBlockStackEnv
+from spirl.data.block_stacking.src.block_stacking_env import HighStackBlockStackEnv, SparseHighStackBlockStackEnv
 from spirl.data.block_stacking.src.block_task_generator import FixedSizeSingleTowerBlockTaskGenerator
 
 
@@ -92,3 +92,12 @@ class HighStack11StackEnvV0(HighStackStackEnvV0):
         default_env_config.table_size = (1.2, 2.4, 0.8)
         default_env_config.n_blocks = 11
         return default_env_config
+
+
+class SparseHighStack11StackEnvV0(HighStack11StackEnvV0):
+    def _make_env(self, name):
+        default_env_config = self._get_default_env_config()
+        if self._hp.env_config is not None:
+            default_env_config.update(self._hp.env_config)
+
+        return SparseHighStackBlockStackEnv(default_env_config)
