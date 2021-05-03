@@ -175,7 +175,7 @@ class SACAgent(ACAgent):
             info.update(self._aux_info(policy_output))
             info = map_dict(ten2ar, info)
 
-            return info
+        return info
 
     def add_experience(self, experience_batch):
         """Adds experience to replay buffer."""
