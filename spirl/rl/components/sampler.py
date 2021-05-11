@@ -180,6 +180,8 @@ class HierarchicalSampler(Sampler):
                                     observation_next=obs,
                                 ))
                                 hl_step += 1
+                                if done:
+                                    hl_experience_batch[-1].reward += reward  # add terminal reward
                                 if hl_step % 1000 == 0:
                                     print("Sample step {}".format(hl_step))
                             self.last_hl_obs = self._obs
