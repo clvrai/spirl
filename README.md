@@ -6,7 +6,7 @@
 
 <sup>1</sup>CLVR Lab, University of Southern California 
 
-<a href="https://kpertsch.github.io/spirl/">
+<a href="https://clvrai.github.io/spirl/">
 <p align="center">
 <img src="docs/resources/spirl_teaser.png" width="800">
 </p>
