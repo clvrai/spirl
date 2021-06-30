@@ -15,6 +15,8 @@ gdown https://drive.google.com/uc?id=1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ
 gdown https://drive.google.com/uc?id=1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M
 ``` 
 
+Finally, unzip the downloaded zip files, update the `data_dir` in your config file to the unzipped directory with the dataset you want to use and then you are ready to start training!
+
 ## Re-Generating Datasets
 
 ### Maze Dataset
