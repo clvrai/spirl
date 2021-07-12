@@ -13,8 +13,9 @@ from spirl.components.logger import Logger
 from spirl.modules.losses import KLDivLoss, NLL
 from spirl.modules.subnetworks import BaseProcessingLSTM, Predictor, Encoder
 from spirl.modules.recurrent_modules import RecurrentPredictor
-from spirl.utils.general_utils import AttrDict, ParamDict, split_along_axis
-from spirl.utils.pytorch_utils import map2np, ten2ar, RemoveSpatial, ResizeSpatial, map2torch, find_tensor
+from spirl.utils.general_utils import AttrDict, ParamDict, split_along_axis, get_clipped_optimizer
+from spirl.utils.pytorch_utils import map2np, ten2ar, RemoveSpatial, ResizeSpatial, map2torch, find_tensor, \
+                                        TensorModule, RAdam
 from spirl.utils.vis_utils import fig2img
 from spirl.modules.variational_inference import ProbabilisticModel, Gaussian, MultivariateGaussian, get_fixed_prior, \
                                                 mc_kl_divergence
@@ -34,6 +35,11 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         self.device = self._hp.device
 
         self.build_network()
+
+        # optionally: optimize beta with dual gradient descent
+        if self._hp.target_kl is not None:
+            self._log_beta = TensorModule(torch.zeros(1, requires_grad=True, device=self._hp.device))
+            self._beta_opt = self._get_beta_opt()
 
     @contextmanager
     def val_mode(self):
@@ -76,6 +82,7 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         default_dict.update({
             'reconstruction_mse_weight': 1.,    # weight of MSE reconstruction loss
             'kl_div_weight': 1.,                # weight of KL divergence loss
+            'target_kl': None,                  # if not None, adds automatic beta-tuning to reach target KL divergence
         })
 
         # add new params to parent params
@@ -139,10 +146,14 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
              self._regression_targets(inputs))
 
         # KL loss
-        losses.kl_loss = KLDivLoss(self._hp.kl_div_weight)(model_output.q, model_output.p)
+        losses.kl_loss = KLDivLoss(self.beta)(model_output.q, model_output.p)
 
         # learned skill prior net loss
         losses.q_hat_loss = self._compute_learned_prior_loss(model_output)
+
+        # Optionally update beta
+        if self.training and self._hp.target_kl is not None:
+            self._update_beta(losses.kl_loss.value)
 
         losses.total = self._compute_total_loss(losses)
         return losses
@@ -157,6 +168,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         :arg phase: 'train' or 'val'
         :arg logger: logger class, visualization functions should be implemented in this class
         """
+        self._logger.log_scalar(self.beta, "beta", step, phase)
+
         # log videos/gifs in tensorboard
         if log_images:
             print('{} {}: logging videos'.format(phase, step))
@@ -279,6 +292,18 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         loss.breakdown = torch.stack([chunk.mean() for chunk in torch.chunk(loss.breakdown, self._hp.n_prior_nets)])
         return loss
 
+    def _get_beta_opt(self):
+        return get_clipped_optimizer(filter(lambda p: p.requires_grad, self._log_beta.parameters()),
+                                     lr=3e-4, optimizer_type=RAdam, betas=(0.9, 0.999), gradient_clip=None)
+
+    def _update_beta(self, kl_div):
+        """Updates beta with dual gradient descent."""
+        assert self._hp.target_kl is not None
+        beta_loss = self._log_beta().exp() * (self._hp.target_kl - kl_div).detach().mean()
+        self._beta_opt.zero_grad()
+        beta_loss.backward()
+        self._beta_opt.step()
+
     def _learned_prior_input(self, inputs):
         return inputs.states[:, 0]
 
@@ -317,6 +342,10 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
     @property
     def n_rollout_steps(self):
         return self._hp.n_rollout_steps
+
+    @property
+    def beta(self):
+        return self._log_beta().exp()[0].detach() if self._hp.target_kl is not None else self._hp.kl_div_weight
 
 
 class ImageSkillPriorMdl(SkillPriorMdl):
