@@ -16,6 +16,8 @@ This is the official PyTorch implementation of the paper "**Accelerating Reinfor
 (CoRL 2020).
 
 ## Updates
+- **[Jul 2021]**: added robotic office cleanup environment 
+(see [details & installation here](spirl/data/office/README.md))
 - **[Apr 2021]**: extended improved SPiRL version to support image-based observations 
 (see [example commands](spirl/configs/skill_prior_learning/block_stacking/hierarchical_cl/README.md))
 - **[Mar 2021]**: added an improved version of SPiRL with closed-loop skill decoder 
@@ -212,13 +214,14 @@ themselves are version controllable.
 |:------------- |:-------------|:-----|
 | Maze | [https://drive.google.com/file/d/1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ/view?usp=sharing](https://drive.google.com/file/d/1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ/view?usp=sharing) | 12GB |
 | Block Stacking |[https://drive.google.com/file/d/1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M/view?usp=sharing](https://drive.google.com/file/d/1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M/view?usp=sharing)| 11GB|
+| Office Cleanup | [https://drive.google.com/file/d/1FOE1kiU71nB-3KCDuxGqlAqRQbKmSk80/view?usp=sharing](https://drive.google.com/file/d/1FOE1kiU71nB-3KCDuxGqlAqRQbKmSk80/view?usp=sharing)| 170MB |
 
 You can download the datasets used for the experiments in the paper with the links above. 
 To download the data via the command line, see example commands [here](spirl/data/).
 
 If you want to generate more data 
 or make other modifications to the data generating procedure, we provide instructions for regenerating the 
-`maze` and `block stacking` datasets [here](spirl/data/).
+`maze`, `block stacking` and `office` datasets [here](spirl/data/).
 
 
 ## Citation
