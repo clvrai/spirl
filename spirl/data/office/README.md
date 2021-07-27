@@ -1,4 +1,4 @@
-## Office Cleanup Environment
+# Office Cleanup Environment
 
 ![](https://kpertsch.github.io/resources/office.gif)
 
@@ -6,7 +6,7 @@ The task for the robot in the office cleanup environment is to place different o
 We collect task-agnostic training data by randomly placing objects into random containers. For the target task 
 we then fix one required matching between objects and containers.
 
-### Installation
+## Installation
 
 To install the environment, clone [our fork of the Roboverse repo](https://github.com/VentusYue/roboverse) and run:
 ```
@@ -15,12 +15,12 @@ pip3 install -r requirements.txt
 pip3 install -e .
 ```
 
-### Data
+## Data
 
 We provide a dataset of task-agnostic sequences for SPiRL pre-training. For download commands and instructions for generating
-more data, see [here](spirl/data/).
+more data, see [here](../README.md).
 
-### Usage
+## Usage
 
 To train a SPiRL skill model on the Office dataset, run:
 ```
