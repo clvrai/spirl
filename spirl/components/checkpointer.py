@@ -120,4 +120,22 @@ def save_cmd(base_dir):
     f.write(train_cmd)
 
                 
+def load_by_key(checkpt_path, key, state_dict, device, epoch='latest'):
+    """Loads weigths from checkpoint whose tag includes key."""
+    checkpt_path = CheckpointHandler.get_resume_ckpt_file(epoch, checkpt_path)
+    weights_dict = torch.load(checkpt_path, map_location=device)['state_dict']
+    for checkpt_key in state_dict:
+        if key in checkpt_key:
+            print("Loading weights for {}".format(checkpt_key))
+            state_dict[checkpt_key] = weights_dict[checkpt_key]
+    return state_dict
 
+
+def freeze_module(module):
+    for p in module.parameters():
+        if p.requires_grad:
+            p.requires_grad = False
+
+
+def freeze_modules(module_list):
+    [freeze_module(module) for module in module_list]

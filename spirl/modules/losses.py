@@ -1,4 +1,6 @@
 import torch
+from torch.nn import BCEWithLogitsLoss
+
 from spirl.utils.general_utils import AttrDict, get_dim_inds
 from spirl.modules.variational_inference import Gaussian
 
@@ -70,5 +72,10 @@ class NLL(Loss):
     def compute(self, estimates, targets):
         nll = estimates.nll(targets)
         return nll
+    
+
+class BCELogitsLoss(Loss):
+    def compute(self, estimates, targets):
+        return BCEWithLogitsLoss()(estimates, targets)
 
 

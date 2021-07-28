@@ -6,6 +6,7 @@ from spirl.utils.pytorch_utils import get_constant_parameter, ResizeSpatial, Rem
 from spirl.models.skill_prior_mdl import SkillPriorMdl, ImageSkillPriorMdl
 from spirl.modules.subnetworks import Predictor, BaseProcessingLSTM, Encoder
 from spirl.modules.variational_inference import MultivariateGaussian
+from spirl.components.checkpointer import load_by_key, freeze_modules
 
 
 class ClSPiRLMdl(SkillPriorMdl):
@@ -46,6 +47,16 @@ class ClSPiRLMdl(SkillPriorMdl):
     def enc_obs(self, obs):
         """Optionally encode observation for decoder."""
         return obs
+
+    def load_weights_and_freeze(self):
+        """Optionally loads weights for components of the architecture + freezes these components."""
+        if self._hp.embedding_checkpoint is not None:
+            print("Loading pre-trained embedding from {}!".format(self._hp.embedding_checkpoint))
+            self.load_state_dict(load_by_key(self._hp.embedding_checkpoint, 'decoder', self.state_dict(), self.device))
+            self.load_state_dict(load_by_key(self._hp.embedding_checkpoint, 'q', self.state_dict(), self.device))
+            freeze_modules([self.decoder, self.q])
+        else:
+            super().load_weights_and_freeze()
 
     @property
     def enc_size(self):
