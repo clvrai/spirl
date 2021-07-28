@@ -136,17 +136,21 @@ class VideoDataset(Dataset):
                 key = 'traj{}'.format(ex_index)
 
                 # Fetch data into a dict
-                data.images = F[key + '/images'][()]
                 for name in F[key].keys():
                     if name in ['states', 'actions', 'pad_mask']:
                         data[name] = F[key + '/' + name][()].astype(np.float32)
+
+                if key + '/images' in F:
+                    data.images = F[key + '/images'][()]
+                else:
+                    data.images = np.zeros((data.states.shape[0], 2, 2, 3), dtype=np.uint8)
         except:
             raise ValueError("Could not load from file {}".format(path))
         return data
 
     def _get_samples_per_file(self, path):
         with h5py.File(path, 'r') as F:
-            return F['traj_per_file'].value
+            return F['traj_per_file'][()]
 
     def _get_subsampler(self):
         subsampler_class = maybe_retrieve(self.spec, 'subsampler')

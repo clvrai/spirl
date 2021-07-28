@@ -40,7 +40,7 @@ obs_norm_params = AttrDict(
 )
 
 base_agent_params = AttrDict(
-    batch_size=256,
+    batch_size=10, #256,
     replay=UniformReplayBuffer,
     replay_params=replay_params,
     clip_q_target=False,
