@@ -55,18 +55,19 @@ Finally, install our fork of the [D4RL benchmark](https://github.com/kpertsch/d4
 It will provide both, the kitchen environment as well as the training data for the skill prior model in kitchen and maze environment.
 
 ## Example Commands
+All results will be written to [WandB](https://www.wandb.com/). Before running any of the commands below, 
+create an account and then change the WandB entity and project name at the top of [train.py](spirl/train.py) and
+[rl/train.py](spirl/rl/train.py) to match your account.
+
 To train a skill prior model for the kitchen environment, run:
 ```
 python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/hierarchical --val_data_size=160
 ```
-Results can be visualized using tensorboard in the experiment directory: `tensorboard --logdir=$EXP_DIR`.
 
 For training a SPIRL agent on the kitchen environment using the pre-trained skill prior from above, run:
 ```
 python3 spirl/rl/train.py --path=spirl/configs/hrl/kitchen/spirl --seed=0 --prefix=SPIRL_kitchen_seed0
 ```
-Results will be written to [WandB](https://www.wandb.com/). Before running RL, 
-create an account and then change the WandB entity and project name at the top of [rl/train.py](spirl/rl/train.py) to match your account.
 
 In both commands, `kitchen` can be replaced with `maze / block_stacking` to run on the respective environment. Before training models
 on these environments, the corresponding datasets need to be downloaded (the kitchen dataset gets downloaded automatically) 
