@@ -47,9 +47,9 @@ class ActionPriorSACAgent(SACAgent):
         check_shape(next_val, [self._hp.batch_size, 1])
         return next_val.squeeze(-1)
 
-    def _aux_info(self, policy_output):
+    def _aux_info(self, experience_batch, policy_output):
         """Stores any additional values that should get logged to WandB."""
-        aux_info = super()._aux_info(policy_output)
+        aux_info = super()._aux_info(experience_batch, policy_output)
         aux_info.prior_divergence = policy_output.prior_divergence.mean()
         if 'ensemble_divergence' in policy_output:      # when using ensemble thresholded prior divergence
             aux_info.ensemble_divergence = policy_output.ensemble_divergence.mean()

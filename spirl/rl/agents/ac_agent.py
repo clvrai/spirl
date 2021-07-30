@@ -173,7 +173,7 @@ class SACAgent(ACAgent):
                 q_1=qs[0].mean(),
                 q_2=qs[1].mean(),
             ))
-            info.update(self._aux_info(policy_output))
+            info.update(self._aux_info(experience_batch, policy_output))
             info = map_dict(ten2ar, info)
 
             self._update_steps += 1
@@ -243,7 +243,7 @@ class SACAgent(ACAgent):
         clip = 1 / (1 - self._hp.discount_factor)
         return torch.clamp(q_target, -clip, clip)
 
-    def _aux_info(self, policy_output):
+    def _aux_info(self, experience_batch, policy_output):
         """Optionally add auxiliary info about policy outputs etc."""
         return AttrDict()
 
