@@ -42,6 +42,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
             self._log_beta = TensorModule(torch.zeros(1, requires_grad=True, device=self._hp.device))
             self._beta_opt = self._get_beta_opt()
 
+        self.load_weights_and_freeze()
+
     @contextmanager
     def val_mode(self):
         self.switch_to_prior()
