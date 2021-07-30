@@ -100,6 +100,7 @@ class SACAgent(ACAgent):
             'replay_params': None,    # parameters for replay buffer
             'critic_lr': 3e-4,        # learning rate for critic update
             'alpha_lr': 3e-4,         # learning rate for alpha coefficient update
+            'fixed_alpha': None,      # optionally fixed value for alpha
             'reward_scale': 1.0,      # SAC reward scale
             'clip_q_target': False,   # if True, clips Q target
             'target_entropy': None,   # target value for automatic entropy tuning, if None uses -action_dim
@@ -175,6 +176,8 @@ class SACAgent(ACAgent):
             info.update(self._aux_info(policy_output))
             info = map_dict(ten2ar, info)
 
+            self._update_steps += 1
+
         return info
 
     def add_experience(self, experience_batch):
@@ -198,12 +201,13 @@ class SACAgent(ACAgent):
         return self.policy(obs)
 
     def _update_alpha(self, experience_batch, policy_output):
+        if self._hp.fixed_alpha is not None:
+            return 0.
         alpha_loss = self._compute_alpha_loss(policy_output)
         self._perform_update(alpha_loss, self.alpha_opt, self._log_alpha)
         return alpha_loss
 
     def _compute_alpha_loss(self, policy_output):
-        self._update_steps += 1
         return -1 * (self.alpha * (self._target_entropy + policy_output.log_prob).detach()).mean()
 
     def _compute_policy_loss(self, experience_batch, policy_output):
@@ -270,3 +274,7 @@ class SACAgent(ACAgent):
     @property
     def alpha(self):
         return self._log_alpha().exp()
+
+    @property
+    def schedule_steps(self):
+        return self._update_steps
