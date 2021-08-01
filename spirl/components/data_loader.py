@@ -23,6 +23,7 @@ class Dataset(data.Dataset):
 
         print('loading files from', self.data_dir)
         self.filenames = self._get_filenames()
+        self.filenames = self._filter_filenames(self.filenames)
         self.samples_per_file = self._get_samples_per_file(self.filenames[0])
 
         self.shuffle = shuffle and phase == 'train'
@@ -49,6 +50,19 @@ class Dataset(data.Dataset):
         if not filenames:
             raise RuntimeError('No filenames found in {}'.format(self.data_dir))
         filenames = shuffle_with_seed(filenames)
+        return filenames
+
+    def _filter_filenames(self, filenames):
+        """Optionally filters filenames / limits to max number of filenames etc."""
+        if "n_seqs" in self.spec:
+            # limit the max number of sequences in dataset
+            filenames = filenames[:self.spec.n_seqs]
+
+        if "seq_repeat" in self.spec:
+            # repeat sequences in dataset
+            filenames *= self.spec.seq_repeat
+            filenames = shuffle_with_seed(filenames)
+
         return filenames
 
     def __len__(self):
