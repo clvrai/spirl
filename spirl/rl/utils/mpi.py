@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import torch
 
-from spirl.utils.general_utils import AttrDict
+from spirl.utils.general_utils import AttrDict, joinListDictList
 
 
 def update_with_mpi_config(conf):
@@ -57,6 +57,23 @@ def sync_networks(network):
     comm.Bcast(flat_params, root=0)
     # set the flat params back to the network
     _set_flat_params(network, params_shape, flat_params)
+
+
+def mpi_gather_experience_batch(experience_batch):
+    buf = MPI.COMM_WORLD.allgather(experience_batch)
+    return joinListDictList(buf)
+
+
+def mpi_gather_experience(experience_batch):
+    """Gathers data across workers, can handle hierarchical and flat experience dicts."""
+    if hasattr(experience_batch, 'hl_batch'):
+        # gather HL and LL batch separately
+        return AttrDict(
+            hl_batch=mpi_gather_experience_batch(experience_batch.hl_batch),
+            ll_batch=mpi_gather_experience_batch(experience_batch.ll_batch),
+        )
+    else:
+        return mpi_gather_experience_batch(experience_batch)
 
 
 def _get_flat_grads(network):

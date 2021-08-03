@@ -10,6 +10,8 @@ import copy
 import re
 import random
 import functools
+import itertools
+
 from functools import partial, reduce
 import collections
 from collections import OrderedDict
@@ -427,6 +429,12 @@ def listdict2dictlist(LD):
 def dictlist2listdict(DL):
     " Converts a dict of lists to a list of dicts "
     return [dict(zip(DL,t)) for t in zip(*DL.values())]
+
+
+def joinListDictList(LDL):
+    """Joins a list of dictionaries that contain lists."""
+    DLL = listdict2dictlist(LDL)
+    return type(LDL[0])({k: list(itertools.chain.from_iterable(DLL[k])) for k in DLL})
 
 
 def subdict(dict, keys, strict=True):
