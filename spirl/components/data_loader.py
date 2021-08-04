@@ -56,11 +56,14 @@ class Dataset(data.Dataset):
         """Optionally filters filenames / limits to max number of filenames etc."""
         if "n_seqs" in self.spec:
             # limit the max number of sequences in dataset
+            if self.phase == "train" and len(filenames) < self.spec.n_seqs:
+                raise ValueError("Not enough seqs in dataset!")
             filenames = filenames[:self.spec.n_seqs]
 
         if "seq_repeat" in self.spec:
             # repeat sequences in dataset
-            filenames *= self.spec.seq_repeat
+            repeat = max(self.spec.seq_repeat, self.dataset_size / len(filenames))
+            filenames *= int(repeat)
             filenames = shuffle_with_seed(filenames)
 
         return filenames
