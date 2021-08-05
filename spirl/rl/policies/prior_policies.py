@@ -35,12 +35,12 @@ class PriorInitializedPolicy(Policy):
             return super().forward(obs)
 
     def _build_network(self):
-        if 'policy_model' in self._hp:
+        if self._hp.policy_model is not None:
             net = self._hp.policy_model(self._hp.policy_model_params, None)
         else:
             net = self._hp.prior_model(self._hp.prior_model_params, None)
         if self._hp.load_weights:
-            if 'policy_model' in self._hp:
+            if self._hp.policy_model is not None:
                 BaseAgent.load_model_weights(net, self._hp.policy_model_checkpoint, self._hp.prior_model_epoch)
             else:
                 BaseAgent.load_model_weights(net, self._hp.prior_model_checkpoint, self._hp.prior_model_epoch)
