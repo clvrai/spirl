@@ -45,8 +45,11 @@ class D4RLSequenceSplitDataset(Dataset):
         # filter demonstration sequences
         if 'filter_indices' in self.spec:
             print("!!! Filtering kitchen demos in range {} !!!".format(self.spec.filter_indices))
-            self.seqs = list(itertools.chain.from_iterable(itertools.repeat(x, self.spec.demo_repeats)
-                               for x in self.seqs[self.spec.filter_indices[0] : self.spec.filter_indices[1]+1]))
+            if not isinstance(self.spec.filter_indices[0], list):
+                self.spec.filter_indices = [self.spec.filter_indices]
+            self.seqs = list(itertools.chain.from_iterable([\
+                list(itertools.chain.from_iterable(itertools.repeat(x, self.spec.demo_repeats)
+                               for x in self.seqs[fi[0] : fi[1]+1])) for fi in self.spec.filter_indices]))
             import random
             random.shuffle(self.seqs)
 

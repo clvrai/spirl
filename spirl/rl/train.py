@@ -9,7 +9,7 @@ from spirl.rl.components.params import get_args
 from spirl.train import set_seeds, make_path, datetime_str, save_config, get_exp_dir, save_checkpoint
 from spirl.components.checkpointer import CheckpointHandler, save_cmd, save_git, get_config_path
 from spirl.utils.general_utils import AttrDict, ParamDict, AverageTimer, timing, pretty_print
-from spirl.rl.utils.mpi import update_with_mpi_config, set_shutdown_hooks, mpi_sum
+from spirl.rl.utils.mpi import update_with_mpi_config, set_shutdown_hooks, mpi_sum, mpi_gather_experience
 from spirl.rl.utils.wandb import WandBLogger
 from spirl.rl.utils.rollout_utils import RolloutSaver
 from spirl.rl.components.sampler import Sampler
@@ -131,13 +131,19 @@ class RLTrainer:
             with timers['batch'].time():
                 # collect experience
                 with timers['rollout'].time():
-                    experience_batch, env_steps = self.sampler.sample_batch(batch_size=self._hp.n_steps_per_update, global_step=self.global_step)
+                    experience_batch, env_steps = self.sampler.sample_batch(batch_size=self._hp.n_steps_per_update,
+                                                                            global_step=self.global_step)
+                    if self.use_multiple_workers:
+                        experience_batch = mpi_gather_experience(experience_batch)
                     self.global_step += mpi_sum(env_steps)
 
                 # update policy
                 with timers['update'].time():
-                    agent_outputs = self.agent.update(experience_batch)
-                    self.n_update_steps += 1
+                    if self.is_chef:
+                        agent_outputs = self.agent.update(experience_batch)
+                    if self.use_multiple_workers:
+                        self.agent.sync_networks()
+                    self.n_update_steps += self.agent.update_iterations
 
                 # log results
                 with timers['log'].time():
@@ -184,12 +190,17 @@ class RLTrainer:
 
     def warmup(self):
         """Performs pre-training warmup experience collection with random policy."""
-        print(f"Warmup data collection for {self._hp.n_warmup_steps} steps...")
+        if self.is_chef:
+            print("Warmup data collection for {} steps...".format(self._hp.n_warmup_steps))
         with self.agent.rand_act_mode():
             self.sampler.init(is_train=True)
-            warmup_experience_batch, _ = self.sampler.sample_batch(batch_size=self._hp.n_warmup_steps)
-        self.agent.add_experience(warmup_experience_batch)
-        print("...Warmup done!")
+            warmup_experience_batch, _ = self.sampler.sample_batch(
+                    batch_size=int(self._hp.n_warmup_steps / self.conf.mpi.num_workers))
+            if self.use_multiple_workers:
+                warmup_experience_batch = mpi_gather_experience(warmup_experience_batch)
+        if self.is_chef:
+            self.agent.add_experience(warmup_experience_batch)
+            print("...Warmup done!")
 
     def get_config(self):
         conf = AttrDict()
@@ -305,6 +316,10 @@ class RLTrainer:
     @property
     def is_chef(self):
         return self.conf.mpi.is_chef
+
+    @property
+    def use_multiple_workers(self):
+        return self.conf.mpi.num_workers > 1
 
 
 if __name__ == '__main__':

@@ -22,6 +22,10 @@ class PriorInitializedPolicy(Policy):
             'prior_model_params': None,       # parameters for the prior model
             'prior_model_checkpoint': None,   # checkpoint path of the prior model
             'prior_model_epoch': 'latest',    # epoch that checkpoint should be loaded for (defaults to latest)
+            'policy_model': None,             # policy model class in case we want to initialize different from prior
+            'policy_model_params': None,      # parameters for the policy model
+            'policy_model_checkpoint': None,  # checkpoint path of the policy model
+            'policy_model_epoch': 'latest',   # epoch that checkpoint should be loaded for (defaults to latest)
             'load_weights': True,             # optionally allows to *not* load the weights (ie train from scratch)
         })
         return super()._default_hparams().overwrite(default_dict)
@@ -31,9 +35,15 @@ class PriorInitializedPolicy(Policy):
             return super().forward(obs)
 
     def _build_network(self):
-        net = self._hp.prior_model(self._hp.prior_model_params, None)
+        if self._hp.policy_model is not None:
+            net = self._hp.policy_model(self._hp.policy_model_params, None)
+        else:
+            net = self._hp.prior_model(self._hp.prior_model_params, None)
         if self._hp.load_weights:
-            BaseAgent.load_model_weights(net, self._hp.prior_model_checkpoint, self._hp.prior_model_epoch)
+            if self._hp.policy_model is not None:
+                BaseAgent.load_model_weights(net, self._hp.policy_model_checkpoint, self._hp.prior_model_epoch)
+            else:
+                BaseAgent.load_model_weights(net, self._hp.prior_model_checkpoint, self._hp.prior_model_epoch)
         return net
 
     def _compute_action_dist(self, obs):

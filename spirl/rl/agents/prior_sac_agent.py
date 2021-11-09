@@ -24,13 +24,12 @@ class ActionPriorSACAgent(SACAgent):
 
     def update(self, experience_batch):
         info = super().update(experience_batch)
-        info.target_divergence = self._target_divergence(self._update_steps)
+        info.target_divergence = self._target_divergence(self.schedule_steps)
         return info
 
     def _compute_alpha_loss(self, policy_output):
         """Computes loss for alpha update based on target divergence."""
-        self._update_steps += 1
-        return self.alpha * (self._target_divergence(self._update_steps) - policy_output.prior_divergence).detach().mean()
+        return self.alpha * (self._target_divergence(self.schedule_steps) - policy_output.prior_divergence).detach().mean()
 
     def _compute_policy_loss(self, experience_batch, policy_output):
         """Computes loss for policy update."""
@@ -48,9 +47,9 @@ class ActionPriorSACAgent(SACAgent):
         check_shape(next_val, [self._hp.batch_size, 1])
         return next_val.squeeze(-1)
 
-    def _aux_info(self, policy_output):
+    def _aux_info(self, experience_batch, policy_output):
         """Stores any additional values that should get logged to WandB."""
-        aux_info = super()._aux_info(policy_output)
+        aux_info = super()._aux_info(experience_batch, policy_output)
         aux_info.prior_divergence = policy_output.prior_divergence.mean()
         if 'ensemble_divergence' in policy_output:      # when using ensemble thresholded prior divergence
             aux_info.ensemble_divergence = policy_output.ensemble_divergence.mean()

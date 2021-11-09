@@ -10,6 +10,7 @@ from matplotlib.patches import Ellipse
 
 from spirl.components.base_model import BaseModel
 from spirl.components.logger import Logger
+from spirl.components.checkpointer import load_by_key, freeze_modules
 from spirl.modules.losses import KLDivLoss, NLL
 from spirl.modules.subnetworks import BaseProcessingLSTM, Predictor, Encoder
 from spirl.modules.recurrent_modules import RecurrentPredictor
@@ -40,6 +41,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         if self._hp.target_kl is not None:
             self._log_beta = TensorModule(torch.zeros(1, requires_grad=True, device=self._hp.device))
             self._beta_opt = self._get_beta_opt()
+
+        self.load_weights_and_freeze()
 
     @contextmanager
     def val_mode(self):
@@ -83,6 +86,11 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
             'reconstruction_mse_weight': 1.,    # weight of MSE reconstruction loss
             'kl_div_weight': 1.,                # weight of KL divergence loss
             'target_kl': None,                  # if not None, adds automatic beta-tuning to reach target KL divergence
+        })
+
+        # loading pre-trained components
+        default_dict.update({
+            'embedding_checkpoint': None,   # optional, if provided loads weights for encoder, decoder and freezes it
         })
 
         # add new params to parent params
@@ -211,6 +219,14 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
     def reset(self):
         """Resets action plan (should be called at beginning of episode when used in RL loop)."""
         self._action_plan = deque()        # stores action plan of LL policy when model is used as policy
+
+    def load_weights_and_freeze(self):
+        """Optionally loads weights for components of the architecture + freezes these components."""
+        if self._hp.embedding_checkpoint is not None:
+            print("Loading pre-trained embedding from {}!".format(self._hp.embedding_checkpoint))
+            self.load_state_dict(load_by_key(self._hp.embedding_checkpoint, 'decoder', self.state_dict(), self.device))
+            self.load_state_dict(load_by_key(self._hp.embedding_checkpoint, 'q', self.state_dict(), self.device))
+            freeze_modules([self.decoder, self.decoder_input_initalizer, self.decoder_hidden_initalizer, self.q])
 
     def _build_inference_net(self):
         # inference gets conditioned on state if decoding is also conditioned on state

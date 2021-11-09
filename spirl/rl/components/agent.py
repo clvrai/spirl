@@ -199,6 +199,10 @@ class BaseAgent(nn.Module):
 
         self.apply(conditional_fn)
 
+    @property
+    def update_iterations(self):
+        return self._hp.update_iterations
+
 
 class HierarchicalAgent(BaseAgent):
     """Implements a basic hierarchical agent with high-level and low-level policy/policies."""
