@@ -215,7 +215,7 @@ themselves are version controllable.
 |:------------- |:-------------|:-----|
 | Maze | [https://drive.google.com/file/d/1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ/view?usp=sharing](https://drive.google.com/file/d/1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ/view?usp=sharing) | 12GB |
 | Block Stacking |[https://drive.google.com/file/d/1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M/view?usp=sharing](https://drive.google.com/file/d/1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M/view?usp=sharing)| 11GB|
-| Office Cleanup | [https://drive.google.com/file/d/1FOE1kiU71nB-3KCDuxGqlAqRQbKmSk80/view?usp=sharing](https://drive.google.com/file/d/1FOE1kiU71nB-3KCDuxGqlAqRQbKmSk80/view?usp=sharing)| 170MB |
+| Office Cleanup | [https://drive.google.com/file/d/1yNsTZkefMMvdbIBe-dTHJxgPIRXyxzb7/view?usp=sharing](https://drive.google.com/file/d/1yNsTZkefMMvdbIBe-dTHJxgPIRXyxzb7/view?usp=sharing)| 170MB |
 
 You can download the datasets used for the experiments in the paper with the links above. 
 To download the data via the command line, see example commands [here](spirl/data/).
