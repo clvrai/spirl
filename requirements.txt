@@ -17,6 +17,4 @@ pandas
 # RL
 wandb
 mpi4py
-
-# Block Stacking
-# mujoco_py==2.0.2.9
+mujoco_py==2.0.2.9
