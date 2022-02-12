@@ -92,6 +92,8 @@ class ModelTrainer(BaseTrainer):
             'optimizer': 'radam',    # supported: 'adam', 'radam', 'rmsprop', 'sgd'
             'lr': 1e-3,
             'gradient_clip': None,
+            'init_grad_clip': 0.001,
+            'init_grad_clip_step': 100,     # clip gradients in initial N steps to avoid NaNs
             'momentum': 0,      # momentum in RMSProp / SGD optimizer
             'adam_beta': 0.9,       # beta1 param in Adam
             'top_of_n_eval': 1,     # number of samples used at eval time
@@ -140,6 +142,9 @@ class ModelTrainer(BaseTrainer):
                 losses.total.value.backward()
                 self.call_hooks(inputs, output, losses, epoch)
 
+                if self.global_step < self._hp.init_grad_clip_step:
+                    # clip gradients in initial steps to avoid NaN gradients
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), self._hp.init_grad_clip)
                 self.optimizer.step()
                 self.model.step()
 
