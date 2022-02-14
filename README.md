@@ -16,6 +16,7 @@ This is the official PyTorch implementation of the paper "**Accelerating Reinfor
 (CoRL 2020).
 
 ## Updates
+- **[Feb 2022]**: added [pre-trained models](spirl/data/pretrained_models.md) for kitchen and maze environments
 - **[Jul 2021]**: added robotic office cleanup environment 
 (see [details & installation here](spirl/data/office/README.md))
 - **[Apr 2021]**: extended improved SPiRL version to support image-based observations 
@@ -61,12 +62,13 @@ create an account and then change the WandB entity and project name at the top o
 
 To train a skill prior model for the kitchen environment, run:
 ```
-python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/hierarchical --val_data_size=160
+python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/hierarchical_cl --val_data_size=160
 ```
+**Note**: You can skip this step by downloading our pre-trained skill prior models -- see [instructions here](spirl/data/pretrained_models.md).
 
 For training a SPIRL agent on the kitchen environment using the pre-trained skill prior from above, run:
 ```
-python3 spirl/rl/train.py --path=spirl/configs/hrl/kitchen/spirl --seed=0 --prefix=SPIRL_kitchen_seed0
+python3 spirl/rl/train.py --path=spirl/configs/hrl/kitchen/spirl_cl --seed=0 --prefix=SPIRL_kitchen_seed0
 ```
 
 In both commands, `kitchen` can be replaced with `maze / block_stacking` to run on the respective environment. Before training models
