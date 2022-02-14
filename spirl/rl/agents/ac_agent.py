@@ -141,6 +141,9 @@ class SACAgent(ACAgent):
             # compute critic loss
             critic_losses, qs = self._compute_critic_loss(experience_batch, q_target)
 
+            # update policy network on policy loss
+            self._perform_update(policy_loss, self.policy_opt, self.policy)
+
             # update critic networks
             [self._perform_update(critic_loss, critic_opt, critic)
                     for critic_loss, critic_opt, critic in zip(critic_losses, self.critic_opts, self.critics)]
@@ -148,9 +151,6 @@ class SACAgent(ACAgent):
             # update target networks
             [self._soft_update_target_network(critic_target, critic)
                     for critic_target, critic in zip(self.critic_targets, self.critics)]
-
-            # update policy network on policy loss
-            self._perform_update(policy_loss, self.policy_opt, self.policy)
 
             # logging
             info = AttrDict(    # losses
