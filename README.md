@@ -245,5 +245,11 @@ We also published many of the utils / architectural building blocks in a stand-a
 own research projects: check out the [blox](https://github.com/orybkin/blox-nn) python module. 
 
 
+## Troubleshooting
+
+### Missing key 'completed_tasks' in Kitchen environment
+Please make sure to install [our fork](https://github.com/kpertsch/d4rl) of the D4RL repository, **not** the original D4RL repository. We made a few small changes to the interface, which e.g. allow us to log the reward contributions for each of the subtasks separately.
+
+
 
 
