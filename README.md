@@ -52,7 +52,7 @@ export EXP_DIR=./experiments
 export DATA_DIR=./data
 ```
 
-Finally, install our fork of the [D4RL benchmark](https://github.com/kpertsch/d4rl) repository by following its installation instructions.
+Finally, install **our fork** of the [D4RL benchmark](https://github.com/kpertsch/d4rl) repository by following its installation instructions.
 It will provide both, the kitchen environment as well as the training data for the skill prior model in kitchen and maze environment.
 
 ## Example Commands
