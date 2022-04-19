@@ -290,8 +290,10 @@ class ModelTrainer(BaseTrainer):
             logger = None
         model = params.model_class(self.conf.model, logger)
         if torch.cuda.device_count() > 1:
-            print("\nUsing {} GPUs!\n".format(torch.cuda.device_count()))
-            model = DataParallelWrapper(model)
+            raise ValueError("Detected {} devices. Currently only single-GPU training is supported!".format(torch.cuda.device_count()),
+                             "Set CUDA_VISIBLE_DEVICES=<desired_gpu_id>.")
+            #print("\nUsing {} GPUs!\n".format(torch.cuda.device_count()))
+            #model = DataParallelWrapper(model)
         model = model.to(self.device)
         model.device = self.device
         loader = self.get_dataset(self.args, model, self.conf.data, phase, params.n_repeat, params.dataset_size)
