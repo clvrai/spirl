@@ -16,9 +16,15 @@ gdown https://drive.google.com/uc?id=1VobNYJQw_Uwax0kbFG7KOXTgv6ja2s1M
 
 # Download Office Dataset
 gdown https://drive.google.com/uc?id=1FOE1kiU71nB-3KCDuxGqlAqRQbKmSk80
+
+# Download Maze Dataset in smaller chunks (~3GB each)
+gdown https://drive.google.com/uc?id=15fjt8QMC6xMpqTMftLF1RCWAe3jvklGb
+gdown https://drive.google.com/uc?id=1aTz94EJYPU5A-h-EV5CxCIfd8io2e-EH
+gdown https://drive.google.com/uc?id=1EiahoGgGiS7ol-Xx-DHIiEroZSeG9jEr
+gdown https://drive.google.com/uc?id=1y5VafZN_95tHStEHKsoQvLrvw2y0pmRQ
 ``` 
 
-Finally, unzip the downloaded zip files, update the `data_dir` in your config file to the unzipped directory with the dataset you want to use and then you are ready to start training!
+Finally, unzip the downloaded zip files, update the `data_dir` in your config file to the unzipped directory with the dataset you want to use and then you are ready to start training! For the chunked maze data, make sure to copy all unzipped contents into a single folder called `maze`.
 
 ## Re-Generating Datasets
 
