@@ -5,3 +5,7 @@ __pycache__
 ./experiments
 ./data
 ./wandb
+
+experiments
+data
+wandb
