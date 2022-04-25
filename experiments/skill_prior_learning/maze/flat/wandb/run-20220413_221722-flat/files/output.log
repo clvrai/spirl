@@ -1,0 +1,19 @@
+/home/cehao/work/spirl/spirl/modules/layers.py:12: UserWarning: nn.init.xavier_normal is now deprecated in favor of nn.init.xavier_normal_.
+  nn.init.xavier_normal(m.weight.data)
+loading files from ./data/maze
+Traceback (most recent call last):
+  File "spirl/train.py", line 395, in <module>
+    ModelTrainer(args=get_args())
+  File "spirl/train.py", line 55, in __init__
+    self.logger, self.model, self.train_loader = self.build_phase(train_params, 'train')
+  File "spirl/train.py", line 297, in build_phase
+    loader = self.get_dataset(self.args, model, self.conf.data, phase, params.n_repeat, params.dataset_size)
+  File "spirl/train.py", line 306, in get_dataset
+    loader = dataset_class(self._hp.data_dir, data_conf, resolution=model.resolution,
+  File "/home/cehao/work/spirl/spirl/components/data_loader.py", line 111, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/cehao/work/spirl/spirl/components/data_loader.py", line 25, in __init__
+    self.filenames = self._get_filenames()
+  File "/home/cehao/work/spirl/spirl/components/data_loader.py", line 83, in _get_filenames
+    raise RuntimeError('No filenames found in {}'.format(self.data_dir))
+RuntimeError: No filenames found in ./data/maze

@@ -15,6 +15,8 @@ def update_with_mpi_config(conf):
     mpi_config.rank = rank
     mpi_config.is_chef = rank == 0
     mpi_config.num_workers = MPI.COMM_WORLD.Get_size()
+
+    # print("====================== number of workers ", mpi_config.num_workers)
     conf.mpi = mpi_config
 
     # update conf

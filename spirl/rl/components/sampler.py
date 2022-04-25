@@ -142,7 +142,6 @@ class HierarchicalSampler(Sampler):
     def sample_batch(self, batch_size, is_train=True, global_step=None, store_ll=True):
         """Samples the required number of high-level transitions. Number of LL transitions can be higher."""
         hl_experience_batch, ll_experience_batch = [], []
-
         env_steps, hl_step = 0, 0
         with self._env.val_mode() if not is_train else contextlib.suppress():
             with self._agent.val_mode() if not is_train else contextlib.suppress():
@@ -200,8 +199,6 @@ class HierarchicalSampler(Sampler):
                                 if hl_experience_batch:   # can potentially be empty 
                                     hl_experience_batch[-1].done = True
                             self._episode_reset(global_step)
-
-
         return AttrDict(
             hl_batch=listdict2dictlist(hl_experience_batch),
             ll_batch=listdict2dictlist(ll_experience_batch[:-1]),   # last element does not have updated obs_next!

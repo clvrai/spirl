@@ -1,0 +1,22 @@
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --gpu 0 --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+
+python spirl/train.py --gpu 0 --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
+

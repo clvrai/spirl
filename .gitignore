@@ -1,3 +1,7 @@
 .idea
 __pycache__
 *.egg-info
+
+./experiments
+./data
+./wandb

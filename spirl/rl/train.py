@@ -15,8 +15,8 @@ from spirl.rl.utils.rollout_utils import RolloutSaver
 from spirl.rl.components.sampler import Sampler
 from spirl.rl.components.replay_buffer import RolloutStorage
 
-WANDB_PROJECT_NAME = 'your_project_name'
-WANDB_ENTITY_NAME = 'your_entity_name'
+WANDB_PROJECT_NAME = 'sp4'
+WANDB_ENTITY_NAME = 'cehao'
 
 
 class RLTrainer:
@@ -29,6 +29,8 @@ class RLTrainer:
         self.conf = self.get_config()
         update_with_mpi_config(self.conf)   # self.conf.mpi = AttrDict(is_chef=True)
         self._hp = self._default_hparams()
+        print('initial hp, the n step ', self._hp.n_steps_per_update)
+
         self._hp.overwrite(self.conf.general)  # override defaults with config file
         self._hp.exp_path = make_path(self.conf.exp_dir, args.path, args.prefix, args.new_dir)
         self.log_dir = log_dir = os.path.join(self._hp.exp_path, 'log')
@@ -102,6 +104,8 @@ class RLTrainer:
         """Run outer training loop."""
         if self._hp.n_warmup_steps > 0:
             self.warmup()
+
+        print('after warm up, start training epochs')
 
         for epoch in range(start_epoch, self._hp.num_epochs):
             print("Epoch {}".format(epoch))
@@ -194,6 +198,8 @@ class RLTrainer:
             print("Warmup data collection for {} steps...".format(self._hp.n_warmup_steps))
         with self.agent.rand_act_mode():
             self.sampler.init(is_train=True)
+
+            self._hp.n_warmup_steps = 1024
             warmup_experience_batch, _ = self.sampler.sample_batch(
                     batch_size=int(self._hp.n_warmup_steps / self.conf.mpi.num_workers))
             if self.use_multiple_workers:

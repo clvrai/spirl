@@ -1,0 +1,140 @@
+2022-04-22 00:10:38,415 INFO    MainThread:1877 [internal.py:wandb_internal():92] W&B internal server running at pid: 1877, started at: 2022-04-22 00:10:38.415204
+2022-04-22 00:10:38,416 INFO    WriterThread:1877 [datastore.py:open_for_write():77] open: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/run-flat.wandb
+2022-04-22 00:10:38,417 DEBUG   SenderThread:1877 [sender.py:send():235] send: header
+2022-04-22 00:10:38,418 DEBUG   SenderThread:1877 [sender.py:send():235] send: run
+2022-04-22 00:10:38,423 INFO    SenderThread:1877 [sender.py:_maybe_setup_resume():492] checking resume status for cehao/sp4/flat
+2022-04-22 00:10:38,892 INFO    SenderThread:1877 [sender.py:_maybe_setup_resume():555] configured resuming with: ResumeState(resumed=True,step=1,history=1,events=3,output=26,runtime=53,wandb_runtime=46,summary={'_wandb': {'runtime': 46}, '_runtime': 16, '_timestamp': 1650556897, 'val/nll_loss': 2.326023817062378, 'train/nll_loss': 2710.642822265625, 'val/total_loss': 2.326023817062378, 'train/gradients/max_norm': 0.0005722545902244747, '_step': 0, 'train/gradients/mean_norm': 0.00010461840429343285, 'train/total_loss': 2710.642822265625},config={'_wandb': {'desc': None, 'value': {'t': {'1': [1, 41, 55], '2': [1, 41, 55], '3': [5, 16], '4': '3.8.13', '5': '0.12.14', '8': [5]}, 'framework': 'torch', 'start_time': 1650557316, 'cli_version': '0.12.14', 'is_jupyter_run': False, 'python_version': '3.8.13', 'is_kaggle_kernel': False}}, 'exp_dir': {'desc': None, 'value': './experiments'}, 'ckpt_path': {'desc': None, 'value': None}, 'conf_path': {'desc': None, 'value': 'spirl/configs/skill_prior_learning/maze/flat/conf.py'}, 'model_res': {'desc': None, 'value': 32}, 'data_device': {'desc': None, 'value': 'cuda'}, 'model_device': {'desc': None, 'value': 'cuda'}, 'model_input_res': {'desc': None, 'value': 32}, 'model_n_actions': {'desc': None, 'value': 2}, 'model_split_val': {'desc': None, 'value': 0.1}, 'model_state_dim': {'desc': None, 'value': 4}, 'general_data_dir': {'desc': None, 'value': './data/maze'}, 'model_action_dim': {'desc': None, 'value': 2}, 'model_batch_size': {'desc': None, 'value': 128}, 'model_split_test': {'desc': None, 'value': 0}, 'model_subseq_len': {'desc': None, 'value': 3}, 'model_max_seq_len': {'desc': None, 'value': 300}, 'model_split_train': {'desc': None, 'value': 0.9}, 'model_n_input_frames': {'desc': None, 'value': 2}, 'data_dataset_spec_res': {'desc': None, 'value': 32}, 'model_crop_rand_subseq': {'desc': None, 'value': True}, 'general_epoch_cycles_train': {'desc': None, 'value': 4}, 'data_dataset_spec_n_actions': {'desc': None, 'value': 2}, 'data_dataset_spec_split_val': {'desc': None, 'value': 0.1}, 'data_dataset_spec_state_dim': {'desc': None, 'value': 4}, 'data_dataset_spec_split_test': {'desc': None, 'value': 0}, 'data_dataset_spec_subseq_len': {'desc': None, 'value': 3}, 'data_dataset_spec_max_seq_len': {'desc': None, 'value': 300}, 'data_dataset_spec_split_train': {'desc': None, 'value': 0.9}, 'data_dataset_spec_crop_rand_subseq': {'desc': None, 'value': True}})
+2022-04-22 00:10:39,412 INFO    SenderThread:1877 [dir_watcher.py:__init__():169] watching files in: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files
+2022-04-22 00:10:39,412 INFO    SenderThread:1877 [sender.py:_start_run_threads():812] run started: flat with start time 1650557384
+2022-04-22 00:10:39,413 DEBUG   SenderThread:1877 [sender.py:send():235] send: summary
+2022-04-22 00:10:39,413 INFO    SenderThread:1877 [sender.py:_save_file():947] saving file wandb-summary.json with policy end
+2022-04-22 00:10:39,414 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: check_version
+2022-04-22 00:10:39,414 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: check_version
+2022-04-22 00:10:39,646 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: run_start
+2022-04-22 00:10:39,683 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: stop_status
+2022-04-22 00:10:39,684 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: stop_status
+2022-04-22 00:10:40,082 DEBUG   SenderThread:1877 [sender.py:send():235] send: telemetry
+2022-04-22 00:10:40,413 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_created():217] file/dir created: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/wandb-summary.json
+2022-04-22 00:10:40,414 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_created():217] file/dir created: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log
+2022-04-22 00:10:42,051 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: partial_history
+2022-04-22 00:10:42,051 WARNING HandlerThread:1877 [handler.py:handle_request_partial_history():511] Step 0 < 1. Dropping entry: {'val/nll_loss': 2.374988317489624, '_timestamp': 1650557442, '_runtime': 58}.
+2022-04-22 00:10:42,051 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: partial_history
+2022-04-22 00:10:42,051 WARNING HandlerThread:1877 [handler.py:handle_request_partial_history():511] Step 0 < 1. Dropping entry: {'val/total_loss': 2.374988317489624, '_timestamp': 1650557442, '_runtime': 58}.
+2022-04-22 00:10:42,413 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_modified():230] file/dir modified: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log
+2022-04-22 00:10:44,415 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_modified():230] file/dir modified: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log
+2022-04-22 00:10:44,951 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: partial_history
+2022-04-22 00:10:44,951 WARNING HandlerThread:1877 [handler.py:handle_request_partial_history():511] Step 0 < 1. Dropping entry: {'train/nll_loss': 9.024467468261719, '_timestamp': 1650557444, '_runtime': 60}.
+2022-04-22 00:10:44,952 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: partial_history
+2022-04-22 00:10:44,952 WARNING HandlerThread:1877 [handler.py:handle_request_partial_history():511] Step 0 < 1. Dropping entry: {'train/total_loss': 9.024467468261719, '_timestamp': 1650557444, '_runtime': 60}.
+2022-04-22 00:10:44,953 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: partial_history
+2022-04-22 00:10:44,953 WARNING HandlerThread:1877 [handler.py:handle_request_partial_history():511] Step 0 < 1. Dropping entry: {'train/gradients/mean_norm': 0.00010069269046653062, '_timestamp': 1650557444, '_runtime': 60}.
+2022-04-22 00:10:44,953 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: partial_history
+2022-04-22 00:10:44,954 WARNING HandlerThread:1877 [handler.py:handle_request_partial_history():511] Step 0 < 1. Dropping entry: {'train/gradients/max_norm': 0.0005526020540855825, '_timestamp': 1650557444, '_runtime': 60}.
+2022-04-22 00:10:46,415 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_modified():230] file/dir modified: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log
+2022-04-22 00:10:46,780 DEBUG   SenderThread:1877 [sender.py:send():235] send: telemetry
+2022-04-22 00:10:48,416 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_modified():230] file/dir modified: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log
+2022-04-22 00:10:49,218 DEBUG   SenderThread:1877 [sender.py:send():235] send: exit
+2022-04-22 00:10:49,218 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:49,218 INFO    SenderThread:1877 [sender.py:send_exit():371] handling exit code: 1
+2022-04-22 00:10:49,218 INFO    SenderThread:1877 [sender.py:send_exit():373] handling runtime: 55
+2022-04-22 00:10:49,234 INFO    SenderThread:1877 [sender.py:_save_file():947] saving file wandb-summary.json with policy end
+2022-04-22 00:10:49,234 INFO    SenderThread:1877 [sender.py:send_exit():379] send defer
+2022-04-22 00:10:49,234 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:49,234 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:49,234 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 0
+2022-04-22 00:10:49,235 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:49,235 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 0
+2022-04-22 00:10:49,235 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 1
+2022-04-22 00:10:49,235 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:49,235 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 1
+2022-04-22 00:10:49,336 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:49,336 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 1
+2022-04-22 00:10:49,336 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 2
+2022-04-22 00:10:49,336 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:49,336 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:49,337 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:49,337 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 2
+2022-04-22 00:10:49,337 DEBUG   SenderThread:1877 [sender.py:send():235] send: stats
+2022-04-22 00:10:49,337 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:49,338 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 2
+2022-04-22 00:10:49,338 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 3
+2022-04-22 00:10:49,338 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:49,338 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 3
+2022-04-22 00:10:49,338 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:49,338 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 3
+2022-04-22 00:10:49,338 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 4
+2022-04-22 00:10:49,339 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:49,339 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 4
+2022-04-22 00:10:49,339 DEBUG   SenderThread:1877 [sender.py:send():235] send: summary
+2022-04-22 00:10:49,340 INFO    SenderThread:1877 [sender.py:_save_file():947] saving file wandb-summary.json with policy end
+2022-04-22 00:10:49,340 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:49,340 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 4
+2022-04-22 00:10:49,340 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 5
+2022-04-22 00:10:49,340 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:49,340 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 5
+2022-04-22 00:10:49,340 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:49,341 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 5
+2022-04-22 00:10:49,417 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_modified():230] file/dir modified: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/wandb-summary.json
+2022-04-22 00:10:49,418 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_modified():230] file/dir modified: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log
+2022-04-22 00:10:49,439 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:49,855 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 6
+2022-04-22 00:10:49,856 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:49,857 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:49,857 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 6
+2022-04-22 00:10:49,857 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:49,857 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 6
+2022-04-22 00:10:49,858 INFO    SenderThread:1877 [dir_watcher.py:finish():283] shutting down directory watcher
+2022-04-22 00:10:49,958 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:50,418 INFO    Thread-7  :1877 [dir_watcher.py:_on_file_modified():230] file/dir modified: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/config.yaml
+2022-04-22 00:10:50,419 INFO    SenderThread:1877 [dir_watcher.py:finish():313] scan: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files
+2022-04-22 00:10:50,419 INFO    SenderThread:1877 [dir_watcher.py:finish():327] scan save: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log output.log
+2022-04-22 00:10:50,420 INFO    SenderThread:1877 [dir_watcher.py:finish():327] scan save: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/config.yaml config.yaml
+2022-04-22 00:10:50,426 INFO    SenderThread:1877 [dir_watcher.py:finish():327] scan save: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/wandb-summary.json wandb-summary.json
+2022-04-22 00:10:50,438 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 7
+2022-04-22 00:10:50,438 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:50,451 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:50,451 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 7
+2022-04-22 00:10:50,451 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:50,452 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 7
+2022-04-22 00:10:50,452 INFO    SenderThread:1877 [file_pusher.py:finish():145] shutting down file pusher
+2022-04-22 00:10:50,541 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:50,542 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:50,645 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:50,645 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:50,748 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:50,749 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:50,852 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:50,853 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:50,955 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:50,956 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:51,058 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: poll_exit
+2022-04-22 00:10:51,058 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: poll_exit
+2022-04-22 00:10:51,097 WARNING MainThread:1877 [internal.py:wandb_internal():155] Internal process interrupt: 1
+2022-04-22 00:10:51,876 INFO    Thread-13 :1877 [upload_job.py:push():137] Uploaded file ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/wandb-summary.json
+2022-04-22 00:10:51,878 INFO    Thread-12 :1877 [upload_job.py:push():137] Uploaded file ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/config.yaml
+2022-04-22 00:10:52,193 INFO    Thread-11 :1877 [upload_job.py:push():137] Uploaded file ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/files/output.log
+2022-04-22 00:10:52,394 INFO    Thread-6  :1877 [sender.py:transition_state():392] send defer: 8
+2022-04-22 00:10:52,405 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:52,405 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 8
+2022-04-22 00:10:52,406 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:52,406 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 8
+2022-04-22 00:10:53,652 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 9
+2022-04-22 00:10:53,653 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:53,653 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 9
+2022-04-22 00:10:53,653 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:53,654 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 9
+2022-04-22 00:10:53,654 INFO    SenderThread:1877 [sender.py:transition_state():392] send defer: 10
+2022-04-22 00:10:53,656 DEBUG   HandlerThread:1877 [handler.py:handle_request():141] handle_request: defer
+2022-04-22 00:10:53,656 INFO    HandlerThread:1877 [handler.py:handle_request_defer():164] handle defer: 10
+2022-04-22 00:10:53,656 DEBUG   SenderThread:1877 [sender.py:send():235] send: final
+2022-04-22 00:10:53,656 DEBUG   SenderThread:1877 [sender.py:send():235] send: footer
+2022-04-22 00:10:53,657 DEBUG   SenderThread:1877 [sender.py:send_request():249] send_request: defer
+2022-04-22 00:10:53,657 INFO    SenderThread:1877 [sender.py:send_request_defer():388] handle sender defer: 10
+2022-04-22 00:10:56,102 WARNING MainThread:1877 [internal.py:is_dead():387] Internal process exiting, parent pid 1800 disappeared
+2022-04-22 00:10:56,103 ERROR   MainThread:1877 [internal.py:wandb_internal():151] Internal process shutdown.
+2022-04-22 00:10:56,657 INFO    SenderThread:1877 [sender.py:finish():1107] shutting down sender
+2022-04-22 00:10:56,658 INFO    SenderThread:1877 [file_pusher.py:finish():145] shutting down file pusher
+2022-04-22 00:10:56,658 INFO    SenderThread:1877 [file_pusher.py:join():150] waiting for file pusher
+2022-04-22 00:10:56,658 INFO    WriterThread:1877 [datastore.py:close():281] close: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220422_001037-flat/run-flat.wandb
+2022-04-22 00:10:56,660 INFO    HandlerThread:1877 [handler.py:finish():790] shutting down handler
+2022-04-22 00:10:56,660 INFO    MainThread:1877 [internal.py:handle_exit():82] Internal process exited

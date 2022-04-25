@@ -1,0 +1,52 @@
+2022-04-21 23:59:25,503 INFO    MainThread:31361 [internal.py:wandb_internal():92] W&B internal server running at pid: 31361, started at: 2022-04-21 23:59:25.502839
+2022-04-21 23:59:25,504 INFO    WriterThread:31361 [datastore.py:open_for_write():77] open: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220421_235925-flat/run-flat.wandb
+2022-04-21 23:59:25,505 DEBUG   SenderThread:31361 [sender.py:send():235] send: header
+2022-04-21 23:59:25,505 DEBUG   SenderThread:31361 [sender.py:send():235] send: run
+2022-04-21 23:59:25,510 INFO    SenderThread:31361 [sender.py:_maybe_setup_resume():492] checking resume status for cehao/sp3/flat
+2022-04-21 23:59:26,634 ERROR   SenderThread:31361 [internal_api.py:execute():144] 409 response executing GraphQL.
+2022-04-21 23:59:26,635 ERROR   SenderThread:31361 [internal_api.py:execute():145] {"errors":[{"message":"Error 1062: Duplicate entry '848868-flat' for key 'PRIMARY'","path":["upsertBucket"]}],"data":{"upsertBucket":null}}
+2022-04-21 23:59:27,505 INFO    WriterThread:31361 [datastore.py:close():281] close: ./experiments/skill_prior_learning/maze/flat/wandb/run-20220421_235925-flat/run-flat.wandb
+2022-04-21 23:59:27,506 INFO    HandlerThread:31361 [handler.py:finish():790] shutting down handler
+2022-04-21 23:59:27,506 ERROR   MainThread:31361 [internal.py:wandb_internal():167] Thread SenderThread:
+Traceback (most recent call last):
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/apis/normalize.py", line 24, in wrapper
+    return func(*args, **kwargs)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/internal_api.py", line 1315, in upsert_run
+    response = self.gql(mutation, variable_values=variable_values, **kwargs)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/lib/retry.py", line 102, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/internal_api.py", line 147, in execute
+    six.reraise(*sys.exc_info())
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/six.py", line 719, in reraise
+    raise value
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/internal_api.py", line 141, in execute
+    return self.client.execute(*args, **kwargs)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/transport/requests.py", line 39, in execute
+    request.raise_for_status()
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/requests/models.py", line 960, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 409 Client Error: Conflict for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/internal_util.py", line 54, in run
+    self._run()
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/internal_util.py", line 105, in _run
+    self._process(record)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/internal.py", line 312, in _process
+    self._sm.send(record)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/sender.py", line 237, in send
+    send_handler(record)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/sender.py", line 695, in send_run
+    self._init_run(run, config_value_dict)
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/sdk/internal/sender.py", line 719, in _init_run
+    server_run, inserted = self._api.upsert_run(
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/site-packages/wandb/apis/normalize.py", line 26, in wrapper
+    raise CommError(err.response, err)
+wandb.errors.CommError: <Response [409]>
+2022-04-21 23:59:29,533 INFO    MainThread:31361 [internal.py:handle_exit():82] Internal process exited

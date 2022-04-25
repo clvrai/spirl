@@ -1,0 +1,44 @@
+python spirl/rl/train.py --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --debug=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --debug=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --debug=1 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --debug=1 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --debug=1 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=1 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+

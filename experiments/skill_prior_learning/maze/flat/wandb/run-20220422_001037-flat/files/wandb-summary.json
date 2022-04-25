@@ -1,0 +1,1 @@
+{"_runtime": 16, "_timestamp": 1650556897, "val/nll_loss": 2.326023817062378, "train/nll_loss": 2710.642822265625, "val/total_loss": 2.326023817062378, "train/gradients/max_norm": 0.0005722545902244747, "_step": 0, "train/gradients/mean_norm": 0.00010461840429343285, "train/total_loss": 2710.642822265625, "_wandb": {"runtime": 55}}

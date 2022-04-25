@@ -1,0 +1,13 @@
+/home/cehao/work/spirl/spirl/modules/layers.py:12: UserWarning: nn.init.xavier_normal is now deprecated in favor of nn.init.xavier_normal_.
+  nn.init.xavier_normal(m.weight.data)
+loading files from ./data/maze
+len train dataset 4649
+loading files from ./data/maze
+len val dataset 160
+Running Testing
+Test set: Average loss: 2.3242 in 0.27s
+starting epoch  0
+/home/cehao/work/spirl/spirl/utils/pytorch_utils.py:339: UserWarning: This overload of addcmul_ is deprecated:
+	addcmul_(Number value, Tensor tensor1, Tensor tensor2)
+Consider using one of the following signatures instead:
+	addcmul_(Tensor tensor1, Tensor tensor2, *, Number value) (Triggered internally at  ../torch/csrc/utils/python_arg_parser.cpp:1055.)

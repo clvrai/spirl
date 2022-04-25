@@ -50,6 +50,7 @@ mkdir ./experiments
 mkdir ./data
 export EXP_DIR=./experiments
 export DATA_DIR=./data
+export PYTHONWARNINGS='ignore:semaphore_tracker:UserWarning'
 ```
 
 Finally, install **our fork** of the [D4RL benchmark](https://github.com/kpertsch/d4rl) repository by following its installation instructions.
@@ -71,6 +72,11 @@ For training a SPIRL agent on the kitchen environment using the pre-trained skil
 python3 spirl/rl/train.py --path=spirl/configs/hrl/kitchen/spirl_cl --seed=0 --prefix=SPIRL_kitchen_seed0
 ```
 
+
+export PYTHONWARNINGS='ignore:semaphore_tracker:UserWarning'
+python3 spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+python3 spirl/rl/train.py  --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
 In both commands, `kitchen` can be replaced with `maze / block_stacking` to run on the respective environment. Before training models
 on these environments, the corresponding datasets need to be downloaded (the kitchen dataset gets downloaded automatically) 
 -- download links are provided below.
@@ -82,6 +88,8 @@ Additional commands for training baseline models / agents are also provided belo
 ```
 python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/flat --val_data_size=160
 ```
+
+python3 spirl/train.py --gpu 0 --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
 
 - Run **Vanilla SAC**:
 ```

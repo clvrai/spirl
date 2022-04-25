@@ -1,0 +1,26 @@
+/home/cehao/work/spirl/spirl/modules/layers.py:12: UserWarning: nn.init.xavier_normal is now deprecated in favor of nn.init.xavier_normal_.
+  nn.init.xavier_normal(m.weight.data)
+loading files from ./data/maze
+len train dataset 4649
+loading files from ./data/maze
+len val dataset 160
+Running Testing
+Test set: Average loss: 2.3260 in 1.29s
+starting epoch  0
+/home/cehao/work/spirl/spirl/utils/pytorch_utils.py:339: UserWarning: This overload of addcmul_ is deprecated:
+	addcmul_(Number value, Tensor tensor1, Tensor tensor2)
+Consider using one of the following signatures instead:
+	addcmul_(Tensor tensor1, Tensor tensor2, *, Number value) (Triggered internally at  ../torch/csrc/utils/python_arg_parser.cpp:1055.)
+  exp_avg_sq.mul_(beta2).addcmul_(1 - beta2, grad, grad)
+Traceback (most recent call last):
+  File "spirl/train.py", line 395, in <module>
+    ModelTrainer(args=get_args())
+  File "spirl/train.py", line 76, in __init__
+    self.train(start_epoch)
+  File "spirl/train.py", line 110, in train
+    self.train_epoch(epoch)
+  File "spirl/train.py", line 162, in train_epoch
+    print('GPU {}: {}'.format(os.environ["CUDA_VISIBLE_DEVICES"] if self.use_cuda else 'none',
+  File "/home/cehao/.conda/envs/spirl/lib/python3.8/os.py", line 675, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'CUDA_VISIBLE_DEVICES'

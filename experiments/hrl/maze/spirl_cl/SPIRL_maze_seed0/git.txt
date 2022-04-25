@@ -1,0 +1,137 @@
+9e5a25bafe26cf9549b9eebae0ad9b702f26cbe8
+diff --git a/README.md b/README.md
+index f7a9e48..67f152c 100644
+--- a/README.md
++++ b/README.md
+@@ -50,6 +50,7 @@ mkdir ./experiments
+ mkdir ./data
+ export EXP_DIR=./experiments
+ export DATA_DIR=./data
++export PYTHONWARNINGS='ignore:semaphore_tracker:UserWarning'
+ ```
+ 
+ Finally, install **our fork** of the [D4RL benchmark](https://github.com/kpertsch/d4rl) repository by following its installation instructions.
+@@ -71,6 +72,11 @@ For training a SPIRL agent on the kitchen environment using the pre-trained skil
+ python3 spirl/rl/train.py --path=spirl/configs/hrl/kitchen/spirl_cl --seed=0 --prefix=SPIRL_kitchen_seed0
+ ```
+ 
++
++export PYTHONWARNINGS='ignore:semaphore_tracker:UserWarning'
++python3 spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
++python3 spirl/rl/train.py  --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
++
+ In both commands, `kitchen` can be replaced with `maze / block_stacking` to run on the respective environment. Before training models
+ on these environments, the corresponding datasets need to be downloaded (the kitchen dataset gets downloaded automatically) 
+ -- download links are provided below.
+@@ -83,6 +89,8 @@ Additional commands for training baseline models / agents are also provided belo
+ python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/flat --val_data_size=160
+ ```
+ 
++python3 spirl/train.py --gpu 0 --path=spirl/configs/skill_prior_learning/maze/flat --val_data_size=160
++
+ - Run **Vanilla SAC**:
+ ```
+ python3 spirl/rl/train.py --path=spirl/configs/rl/kitchen/SAC --seed=0 --prefix=SAC_kitchen_seed0
+diff --git a/spirl/rl/components/sampler.py b/spirl/rl/components/sampler.py
+index ccb6a17..a418020 100644
+--- a/spirl/rl/components/sampler.py
++++ b/spirl/rl/components/sampler.py
+@@ -142,7 +142,6 @@ class HierarchicalSampler(Sampler):
+     def sample_batch(self, batch_size, is_train=True, global_step=None, store_ll=True):
+         """Samples the required number of high-level transitions. Number of LL transitions can be higher."""
+         hl_experience_batch, ll_experience_batch = [], []
+-
+         env_steps, hl_step = 0, 0
+         with self._env.val_mode() if not is_train else contextlib.suppress():
+             with self._agent.val_mode() if not is_train else contextlib.suppress():
+@@ -200,8 +199,6 @@ class HierarchicalSampler(Sampler):
+                                 if hl_experience_batch:   # can potentially be empty 
+                                     hl_experience_batch[-1].done = True
+                             self._episode_reset(global_step)
+-
+-
+         return AttrDict(
+             hl_batch=listdict2dictlist(hl_experience_batch),
+             ll_batch=listdict2dictlist(ll_experience_batch[:-1]),   # last element does not have updated obs_next!
+diff --git a/spirl/rl/train.py b/spirl/rl/train.py
+index 225a09e..4f8c3aa 100644
+--- a/spirl/rl/train.py
++++ b/spirl/rl/train.py
+@@ -15,8 +15,8 @@ from spirl.rl.utils.rollout_utils import RolloutSaver
+ from spirl.rl.components.sampler import Sampler
+ from spirl.rl.components.replay_buffer import RolloutStorage
+ 
+-WANDB_PROJECT_NAME = 'your_project_name'
+-WANDB_ENTITY_NAME = 'your_entity_name'
++WANDB_PROJECT_NAME = 'sp4'
++WANDB_ENTITY_NAME = 'cehao'
+ 
+ 
+ class RLTrainer:
+@@ -29,6 +29,8 @@ class RLTrainer:
+         self.conf = self.get_config()
+         update_with_mpi_config(self.conf)   # self.conf.mpi = AttrDict(is_chef=True)
+         self._hp = self._default_hparams()
++        print('initial hp, the n step ', self._hp.n_steps_per_update)
++
+         self._hp.overwrite(self.conf.general)  # override defaults with config file
+         self._hp.exp_path = make_path(self.conf.exp_dir, args.path, args.prefix, args.new_dir)
+         self.log_dir = log_dir = os.path.join(self._hp.exp_path, 'log')
+@@ -103,6 +105,8 @@ class RLTrainer:
+         if self._hp.n_warmup_steps > 0:
+             self.warmup()
+ 
++        print('after warm up, start training epochs')
++
+         for epoch in range(start_epoch, self._hp.num_epochs):
+             print("Epoch {}".format(epoch))
+             self.train_epoch(epoch)
+@@ -194,6 +198,11 @@ class RLTrainer:
+             print("Warmup data collection for {} steps...".format(self._hp.n_warmup_steps))
+         with self.agent.rand_act_mode():
+             self.sampler.init(is_train=True)
++
++            self._hp.n_warmup_steps = 1024
++            print('in warm up, ', self._hp.n_warmup_steps , self.conf.mpi.num_workers, 
++                                int(self._hp.n_warmup_steps / self.conf.mpi.num_workers))
++
+             warmup_experience_batch, _ = self.sampler.sample_batch(
+                     batch_size=int(self._hp.n_warmup_steps / self.conf.mpi.num_workers))
+             if self.use_multiple_workers:
+diff --git a/spirl/rl/utils/mpi.py b/spirl/rl/utils/mpi.py
+index 80ad098..9199af2 100644
+--- a/spirl/rl/utils/mpi.py
++++ b/spirl/rl/utils/mpi.py
+@@ -15,6 +15,8 @@ def update_with_mpi_config(conf):
+     mpi_config.rank = rank
+     mpi_config.is_chef = rank == 0
+     mpi_config.num_workers = MPI.COMM_WORLD.Get_size()
++
++    # print("====================== number of workers ", mpi_config.num_workers)
+     conf.mpi = mpi_config
+ 
+     # update conf
+diff --git a/spirl/train.py b/spirl/train.py
+index b48bec3..885c831 100644
+--- a/spirl/train.py
++++ b/spirl/train.py
+@@ -23,8 +23,8 @@ from spirl.components.trainer_base import BaseTrainer
+ from spirl.utils.wandb import WandBLogger
+ from spirl.components.params import get_args
+ 
+-WANDB_PROJECT_NAME = 'your_project_name'
+-WANDB_ENTITY_NAME = 'your_entity_name'
++WANDB_PROJECT_NAME = 'sp4'
++WANDB_ENTITY_NAME = 'cehao'
+ 
+ 
+ class ModelTrainer(BaseTrainer):
+@@ -212,6 +212,8 @@ class ModelTrainer(BaseTrainer):
+     def setup_device(self):
+         self.use_cuda = torch.cuda.is_available() and not self.args.debug
+         self.device = torch.device('cuda') if self.use_cuda else torch.device('cpu')
++        print('================================== Now device is ', self.device)
++        print('self.args.gpu is ', self.args.gpu)
+         if self.args.gpu != -1:
+             os.environ["CUDA_VISIBLE_DEVICES"] = str(self.args.gpu)
+ 
