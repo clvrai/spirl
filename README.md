@@ -65,6 +65,17 @@ To train a skill prior model for the kitchen environment, run:
 ```
 python3 spirl/train.py --path=spirl/configs/skill_prior_learning/kitchen/hierarchical_cl --val_data_size=160
 ```
+python3 spirl/train.py --gpu=0 --path=spirl/configs/skill_prior_learning/maze/hierarchical_cl --val_data_size=160
+
+python3 spirl/train.py --gpu=0 --train=0 --path=spirl/configs/skill_prior_learning/maze/hierarchical_cl --val_data_size=160
+
+python3 spirl/train.py --gpu=0 --train=0 --resume='latest'  --path=spirl/configs/skill_prior_learning/maze/hierarchical_cl --val_data_size=160
+
+
+python3 spirl/train.py --gpu=0 --train=0 --resume='latest'  --path=spirl/configs/skill_prior_learning/maze/hierarchical_cl --val_data_size=160 --save2mp4=1
+
+
+
 **Note**: You can skip this step by downloading our pre-trained skill prior models -- see [instructions here](spirl/data/pretrained_models.md).
 
 For training a SPIRL agent on the kitchen environment using the pre-trained skill prior from above, run:
@@ -72,10 +83,12 @@ For training a SPIRL agent on the kitchen environment using the pre-trained skil
 python3 spirl/rl/train.py --path=spirl/configs/hrl/kitchen/spirl_cl --seed=0 --prefix=SPIRL_kitchen_seed0
 ```
 
-
-export PYTHONWARNINGS='ignore:semaphore_tracker:UserWarning'
 python3 spirl/rl/train.py --gpu=0 --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
-python3 spirl/rl/train.py  --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python3 spirl/rl/train.py --gpu=0 --mode='val' --resume='latest' --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
+python3 spirl/rl/train.py --gpu=0  --mode='val' --path=spirl/configs/hrl/maze/spirl_cl --seed=0 --prefix=SPIRL_maze_seed0
+
 
 In both commands, `kitchen` can be replaced with `maze / block_stacking` to run on the respective environment. Before training models
 on these environments, the corresponding datasets need to be downloaded (the kitchen dataset gets downloaded automatically) 

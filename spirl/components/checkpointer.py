@@ -16,11 +16,14 @@ class CheckpointHandler:
     @staticmethod
     def get_epochs(path):
         checkpoint_names = glob.glob(os.path.abspath(path) + "/*.pth")
+        # print('checkpoint_names', checkpoint_names)
         if len(checkpoint_names) == 0:
             raise ValueError("No checkpoints found at {}!".format(path))
         processed_names = [file.split('/')[-1].replace('weights_ep', '').replace('.pth', '')
                            for file in checkpoint_names]
         epochs = list(filter(lambda x: x is not None, [str2int(name) for name in processed_names]))
+        # print('processed_names', processed_names)
+        # print('return epochs', epochs)
         return epochs
     
     @staticmethod

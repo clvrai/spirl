@@ -6,6 +6,6 @@ __pycache__
 ./data
 ./wandb
 
-experiments
-data
-wandb
+experiments/
+data/
+wandb/

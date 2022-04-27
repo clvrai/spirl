@@ -70,6 +70,9 @@ class ModelTrainer(BaseTrainer):
         if args.resume or conf.ckpt_path is not None:
             start_epoch = self.resume(args.resume, conf.ckpt_path)
 
+
+        print('start epch is ', start_epoch)
+        self._hp.num_epochs = 2
         if args.val_sweep:
             self.run_val_sweep()
         elif args.train:
@@ -212,8 +215,8 @@ class ModelTrainer(BaseTrainer):
     def setup_device(self):
         self.use_cuda = torch.cuda.is_available() and not self.args.debug
         self.device = torch.device('cuda') if self.use_cuda else torch.device('cpu')
-        print('================================== Now device is ', self.device)
-        print('self.args.gpu is ', self.args.gpu)
+        # print('================================== Now device is ', self.device)
+        # print('self.args.gpu is ', self.args.gpu)
         if self.args.gpu != -1:
             os.environ["CUDA_VISIBLE_DEVICES"] = str(self.args.gpu)
 

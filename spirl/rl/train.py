@@ -102,10 +102,13 @@ class RLTrainer:
 
     def train(self, start_epoch):
         """Run outer training loop."""
+
+        self._hp.n_warmup_steps = 256
         if self._hp.n_warmup_steps > 0:
             self.warmup()
 
         print('after warm up, start training epochs')
+        self._hp.num_epochs = 2
 
         for epoch in range(start_epoch, self._hp.num_epochs):
             print("Epoch {}".format(epoch))
@@ -199,7 +202,6 @@ class RLTrainer:
         with self.agent.rand_act_mode():
             self.sampler.init(is_train=True)
 
-            self._hp.n_warmup_steps = 1024
             warmup_experience_batch, _ = self.sampler.sample_batch(
                     batch_size=int(self._hp.n_warmup_steps / self.conf.mpi.num_workers))
             if self.use_multiple_workers:
