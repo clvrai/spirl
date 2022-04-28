@@ -1,4 +1,24 @@
 # Accelerating Reinforcement Learning with Learned Skill Priors
+
+
+
+
+## commands
+1. run prior learning
+
+2. run formal training
+
+3. Run SAC
+
+- Run **Vanilla SAC**:
+```
+python3 spirl/rl/train.py --path=spirl/configs/rl/kitchen/SAC --seed=0 --prefix=SAC_kitchen_seed0
+
+
+
+
+
+
 #### [[Project Website]](https://clvrai.github.io/spirl/) [[Paper]](https://arxiv.org/abs/2010.11944)
 
 [Karl Pertsch](https://kpertsch.github.io/)<sup>1</sup>, [Youngwoon Lee](https://youngwoon.github.io/)<sup>1</sup>, 
