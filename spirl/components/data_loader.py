@@ -11,7 +11,7 @@ from spirl.utils.general_utils import AttrDict, map_dict, maybe_retrieve, shuffl
 from spirl.utils.pytorch_utils import RepeatedDataLoader
 from spirl.utils.video_utils import resize_video
 
-
+# ================================= original video loader ======================
 class Dataset(data.Dataset):
 
     def __init__(self, data_dir, data_conf, phase, shuffle=True, dataset_size=-1):
