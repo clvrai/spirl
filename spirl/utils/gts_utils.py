@@ -35,9 +35,23 @@ RL_OBS_1 = ['lap_count', 'current_lap_time_msec', 'speed_kmph', 'frame_count', '
                 'centerline_diff_angle', 'centerline_distance', 'edge_l_distance', 'edge_r_distance', 'course_v',
                 'is_hit_wall', 'is_hit_cars', 'hit_wall_time', 'hit_cars_time',
                 'steering', 'throttle', 'brake'] + \
-                ["curvature_in_%.1f_%s" % (step, "seconds") for step in np.arange(start=1.0, stop=3.0, step=0.2)] \
+                ["curvature_in_%.1f_%s" % (step, "seconds") for step in np.arange(start=0.2, stop=3.0, step=0.2)] \
                 + ["lidar_distance_%i_deg" % deg for deg in np.concatenate(
                 (np.arange(start=0, stop=105, step=15), np.arange(start=270, stop=360, step=15),))]
+
+
+ego_obs = ['Vx', 'Vy', 'Vz', 'dpsi' , 'ax', 'ay', 'az', 'epsi', 'ey', 'Wl', 'Wr'] + \
+              ['hit_wall', 'hit_car', 'delta' , 'thr', 'brk']
+mode = "seconds"
+seconds_into_future = np.arange(start=0.2, stop=3.0, step=0.2)
+curvature_name_space = ["curvature_in_%.1f_%s" % (step, mode) for step in seconds_into_future]
+lidar_name_space = ["lidar_distance_%i_deg" % deg for deg in np.concatenate(
+            (np.arange(start=0, stop=105, step=15), np.arange(start=270, stop=360, step=15),))]
+
+ego_obs += curvature_name_space
+ego_obs += lidar_name_space
+
+
 
 def start_condition_formulator(num_cars, course_v, speed):
     conditions = []
@@ -225,3 +239,22 @@ def gts_state_2_cartesian(gts_state):
             pass
 
     return state
+
+def raw_observation_to_true_observation(raw_obs):
+    gts_states = gts_observation_2_state(raw_obs, RL_OBS_1)
+
+    states = gts_state_2_cartesian(gts_states)
+    return states_2_obs(states)
+
+def gts_observation_2_state(observation, feature_keys):
+    gts_state = {}
+    for obs,key in zip(observation, feature_keys):
+        gts_state[key] = obs
+
+    return gts_state
+
+def states_2_obs(states):
+    observation = []
+    for key in ego_obs:
+        observation.append(states[key])
+    return observation
