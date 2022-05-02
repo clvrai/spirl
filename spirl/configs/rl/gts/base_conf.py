@@ -18,14 +18,14 @@ notes = 'non-hierarchical RL experiments in gts env'
 
 
 configuration = {
-    'seed': 42,
+    'seed': 2,
     'agent': SACAgent,
     'environment': GTSEnv_Base,
     'data_dir': '.',
     'num_epochs': 100,
     'max_rollout_len': 2000,
     'n_steps_per_epoch': 100000,
-    'n_warmup_steps': 5e3,
+    'n_warmup_steps': 160000,
 }
 
 configuration = AttrDict(configuration)
@@ -51,7 +51,7 @@ critic_params = AttrDict(
 
 # Replay Buffer
 replay_params = AttrDict(
-    capacity=1e6,
+    capacity=4000000,
     dump_replay=False,
 )
 
@@ -70,9 +70,10 @@ agent_config = AttrDict(
     # obs_normalizer=Normalizer,
     # obs_normalizer_params=obs_norm_params,
     clip_q_target=False,
-    # batch_size=256,
-    batch_size = 16,
+    batch_size=256,
     log_videos=False,
+
+    discount_factor = 0.98
 )
 
 # Dataset - Random data
