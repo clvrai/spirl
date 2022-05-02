@@ -51,7 +51,7 @@ lidar_name_space = ["lidar_distance_%i_deg" % deg for deg in np.concatenate(
 ego_obs += curvature_name_space
 ego_obs += lidar_name_space
 
-
+state_dim = len(ego_obs)
 
 def start_condition_formulator(num_cars, course_v, speed):
     conditions = []
@@ -93,7 +93,8 @@ def initialize_gts(ip, num_cars, car_codes, course_code, tire_type, bops):
             bops = bops
         )
 
-def make_env(ip, min_frames_per_action, feature_keys, builtin_controlled, spectator_mode=False):
+def make_env(ip, min_frames_per_action, feature_keys, builtin_controlled, spectator_mode=False,
+            reward_function=None, done_function=None):
     env = gym.make(
                 'gts-v0', 
                 ip=ip,  
@@ -102,7 +103,9 @@ def make_env(ip, min_frames_per_action, feature_keys, builtin_controlled, specta
                 feature_keys = feature_keys,
                 standardize_observations = False,
                 store_states = False,
-                spectator_mode = spectator_mode
+                spectator_mode = spectator_mode,
+                reward_function = reward_function,
+                done_function = done_function
         )
     return env
 
@@ -258,3 +261,40 @@ def states_2_obs(states):
     for key in ego_obs:
         observation.append(states[key])
     return observation
+
+
+# ======================================== reward function =====================================
+
+maf = 6
+c_wall_hit = 1/(2000*10/9.3)
+horizon = 100
+max_eval_lap = 100
+
+def time_done(seconds, state):
+    """ Determines if game time of 'state' is bigger than 'seconds' """
+    return state["frame_count"] > (60 * seconds) if state else False
+
+
+def sampling_done_function(state):
+    return time_done(horizon, state)
+
+
+def evaluation_done_function(state):
+    return state["lap_count"] > 2 or state["current_lap_time_msec"]/1000.0 > max_eval_lap if state else False
+
+
+def reward_function(state, previous_state, course_length):
+    if previous_state \
+            and isinstance(previous_state["course_v"], float) \
+            and isinstance(previous_state["lap_count"], int):
+
+        # version robust to step length through scaling and always detecting wall contact (other than is_hit_wall)
+        reward = (
+                         - (
+                                 (state["hit_wall_time"] - previous_state["hit_wall_time"])
+                                 * 10 * state["speed_kmph"]**2 * c_wall_hit)
+                         + (state["course_v"] + state["lap_count"] * course_length)
+                         - (previous_state["course_v"] + previous_state["lap_count"] * course_length)
+                 ) * (maf/(state["frame_count"] - previous_state["frame_count"]))  # correcting too long steps
+
+        return reward

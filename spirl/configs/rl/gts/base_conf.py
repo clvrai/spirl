@@ -4,12 +4,12 @@ from spirl.utils.general_utils import AttrDict
 from spirl.rl.policies.mlp_policies import MLPPolicy
 from spirl.rl.components.critic import MLPCritic
 from spirl.rl.components.replay_buffer import UniformReplayBuffer
-from spirl.rl.envs.gts import GTSEnv
+from spirl.rl.envs.gts import GTSEnv_Base
 
 from spirl.rl.agents.ac_agent import SACAgent
 
 from spirl.rl.components.normalization import Normalizer
-from spirl.configs.default_data_configs.maze import data_spec
+from spirl.configs.default_data_configs.gts import data_spec
 
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -20,17 +20,12 @@ notes = 'non-hierarchical RL experiments in gts env'
 configuration = {
     'seed': 42,
     'agent': SACAgent,
-    'environment': GTSEnv,
+    'environment': GTSEnv_Base,
     'data_dir': '.',
     'num_epochs': 100,
     'max_rollout_len': 2000,
     'n_steps_per_epoch': 100000,
     'n_warmup_steps': 5e3,
-
-    'ip_address':'192.168.124.14',
-    'car_name' : 'Audi TTCup',
-    'tire_type' : 'RH',
-    'course_name' :'Tokyo Central Outer'
 }
 
 configuration = AttrDict(configuration)

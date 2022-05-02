@@ -11,6 +11,8 @@ from spirl.utils.gts_utils import make_env, initialize_gts
 from spirl.utils.gts_utils import RL_OBS_1, CAR_CODE, COURSE_CODE, TIRE_TYPE, BOP
 from spirl.utils.gts_utils import raw_observation_to_true_observation
 
+from spirl.utils.gts_utils import reward_function, sampling_done_function
+
 class GTSEnv_Base(GymEnv):
     def __init__(self, config):
         self._hp = self._default_hparams().overwrite(config)
@@ -27,14 +29,16 @@ class GTSEnv_Base(GymEnv):
             'car_name' : 'Audi TTCup',
             'course_name' : 'Tokyo Central Outer' ,
             'num_cars' : 1,
-            'spectator_mode' : False
+            'spectator_mode' : False,
         })
         return super()._default_hparams().overwrite(default_dict)
 
     def _game_hp(self):
         game_hp = ParamDict({
             'builtin_controlled' : [],
-            'do_init' : False
+            'do_init' : False,
+            'reward_function' : reward_function,
+            'done_function' : sampling_done_function
         })
         return game_hp
 
@@ -55,13 +59,14 @@ class GTSEnv_Base(GymEnv):
             min_frames_per_action=6, 
             feature_keys = RL_OBS_1, 
             builtin_controlled = self._hp.builtin_controlled, 
-            spectator_mode = self._hp.spectator_mode
+            spectator_mode = self._hp.spectator_mode,
+            reward_function = self._hp.reward_function,
+            done_function = self._hp.done_function
         )
 
         self.course_length = self._get_course_length()
 
     def reset(self, start_conditions=None):
-
         obs = self._env.reset(start_conditions=start_conditions)
         return self._wrap_observation(obs)
 
