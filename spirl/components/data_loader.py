@@ -31,6 +31,8 @@ class Dataset(data.Dataset):
 
     def get_data_loader(self, batch_size, n_repeat):
         print('len {} dataset {}'.format(self.phase, len(self)))
+
+
         assert self.device in ['cuda', 'cpu']  # Otherwise the logic below is wrong
         return RepeatedDataLoader(self, batch_size=batch_size, shuffle=self.shuffle, num_workers=self.n_worker,
                                   drop_last=True, n_repeat=n_repeat, pin_memory=self.device == 'cuda',
@@ -138,7 +140,8 @@ class VideoDataset(Dataset):
             data.start_ind, data.end_ind = start_ind, end_ind
 
         # perform final processing on data
-        data.images = self._preprocess_images(data.images)
+        if (data.images.ndim == 4):
+            data.images = self._preprocess_images(data.images)
 
         return data
 
@@ -156,11 +159,16 @@ class VideoDataset(Dataset):
                 for name in F[key].keys():
                     if name in ['states', 'actions', 'pad_mask']:
                         data[name] = F[key + '/' + name][()].astype(np.float32)
+                        # print('find key ', name)
+                        # print('dim is ', data[name].shape)
 
                 if key + '/images' in F:
                     data.images = F[key + '/images'][()]
                 else:
                     data.images = np.zeros((data.states.shape[0], 2, 2, 3), dtype=np.uint8)
+
+                # import time 
+                # time.sleep(100)
         except:
             raise ValueError("Could not load from file {}".format(path))
         return data

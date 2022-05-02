@@ -1,6 +1,8 @@
 from spirl.utils.general_utils import AttrDict
 from spirl.components.data_loader import GlobalSplitActionSequenceDataset
 
+from spirl.components.data_loader import GlobalSplitVideoDataset
+
 
 from spirl.utils.gts_utils import state_dim
 
