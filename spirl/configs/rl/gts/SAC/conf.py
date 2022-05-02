@@ -1,0 +1,1 @@
+from spirl.configs.rl.gts.base_conf import *

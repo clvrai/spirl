@@ -15,8 +15,10 @@
 python3 spirl/rl/train.py --path=spirl/configs/rl/kitchen/SAC --seed=0 --prefix=SAC_kitchen_seed0
 
 
+python3 spirl/rl/train.py --path=spirl/configs/rl/gts/SAC --seed=0 --prefix=SAC_gts_seed0 --gpu=0
+python spirl/rl/envs/gts.py
 
-
+python3 spirl/rl/train.py --path=spirl/configs/rl/maze/SAC --seed=0 --prefix=SAC_maze_seed0 --gpu=0
 
 
 #### [[Project Website]](https://clvrai.github.io/spirl/) [[Paper]](https://arxiv.org/abs/2010.11944)

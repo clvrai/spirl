@@ -70,7 +70,8 @@ agent_config = AttrDict(
     # obs_normalizer=Normalizer,
     # obs_normalizer_params=obs_norm_params,
     clip_q_target=False,
-    batch_size=256,
+    # batch_size=256,
+    batch_size = 16,
     log_videos=False,
 )
 
