@@ -115,6 +115,7 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         :arg inputs: dict with 'states', 'actions', 'images' keys from data loader
         :arg use_learned_prior: if True, decodes samples from learned prior instead of posterior, used for RL
         """
+
         output = AttrDict()
         inputs.observations = inputs.actions    # for seamless evaluation
 
@@ -324,7 +325,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         return inputs.states[:, 0]
 
     def _regression_targets(self, inputs):
-        return inputs.actions
+        return inputs.actions[:, (self._hp.n_input_frames-1):]
+        # return inputs.actions
 
     def evaluate_prior_divergence(self, state):
         """Evaluates prior divergence as mean pairwise KL divergence of ensemble of priors."""

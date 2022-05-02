@@ -64,7 +64,7 @@ class ModelTrainer(BaseTrainer):
         self.optimizer = self.get_optimizer_class()(filter(lambda p: p.requires_grad, self.model.parameters()), lr=self._hp.lr)
         self.evaluator = self._hp.evaluator(self._hp, self.log_dir, self._hp.top_of_n_eval,
                                             self._hp.top_comp_metric, tb_logger=self.logger_test)
-        
+
         # load model params from checkpoint
         self.global_step, start_epoch = 0, 0
         if args.resume or conf.ckpt_path is not None:
