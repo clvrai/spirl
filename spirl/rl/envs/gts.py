@@ -1,4 +1,3 @@
-from ast import Gt
 from gym_gts import GTSApi
 import gym
 
