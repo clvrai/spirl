@@ -37,7 +37,7 @@ class GTSEnv_Base(GymEnv):
     def _game_hp(self):
         game_hp = ParamDict({
             'builtin_controlled' : [],
-            'do_init' : False,
+            'do_init' : True,
             'reward_function' : reward_function,
             'done_function' : sampling_done_function
         })
@@ -82,16 +82,19 @@ class GTSEnv_Base(GymEnv):
         course_length, course_code, course_name = self._env.get_course_meta()
         return course_length
 
+    def render(self, mode='rgb_array'):
+        return [0,0,0]
+
 if __name__ == "__main__":
     from spirl.utils.general_utils import AttrDict
     # conf = AttrDict({'do_init' : True})
     conf = AttrDict({'do_init' : False})
     env  = GTSEnv_Base(conf)
     obs = env.reset()
-    obs, rew, done, info = env.step([0, -1])
-    print('obs shape', obs.shape)
-    print('rew shape', rew)
-    print('done shape', done)
+    # obs, rew, done, info = env.step([0, -1])
+    # print('obs shape', obs.shape)
+    # print('rew shape', rew)
+    # print('done shape', done)
 
 
     # python spirl/rl/envs/gts.py
