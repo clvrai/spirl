@@ -72,7 +72,8 @@ class ModelTrainer(BaseTrainer):
 
 
         print('start epch is ', start_epoch)
-        self._hp.num_epochs = 2
+        # self._hp.num_epochs = 2
+
         if args.val_sweep:
             self.run_val_sweep()
         elif args.train:
