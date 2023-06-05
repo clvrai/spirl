@@ -10,7 +10,9 @@ import itertools
 from spirl.utils.general_utils import AttrDict, map_dict, maybe_retrieve, shuffle_with_seed
 from spirl.utils.pytorch_utils import RepeatedDataLoader
 from spirl.utils.video_utils import resize_video
-
+from tqdm import tqdm
+import pickle
+import re, collections
 
 class Dataset(data.Dataset):
 
@@ -22,12 +24,18 @@ class Dataset(data.Dataset):
         self.device = data_conf.device
 
         print('loading files from', self.data_dir)
-        self.filenames = self._get_filenames()
+        
+        # get both filenames, and quantized_list
+        self.filenames, self.quantized_list = self._get_filenames()
+        
+        
         self.filenames = self._filter_filenames(self.filenames)
         self.samples_per_file = self._get_samples_per_file(self.filenames[0])
 
         self.shuffle = shuffle and phase == 'train'
         self.n_worker = 8 if shuffle else 1  # was 4 before
+
+
 
     def get_data_loader(self, batch_size, n_repeat):
         print('len {} dataset {}'.format(self.phase, len(self)))
@@ -45,20 +53,27 @@ class Dataset(data.Dataset):
         raise NotImplementedError("Needs to be implemented in sub-class!")
 
     def _get_filenames(self):
+        # does not operate, since will be overwritted
         """Loads filenames from self.data_dir, expects subfolders train/val/test, each with hdf5 files"""
         filenames = sorted(glob.glob(os.path.join(self.data_dir, self.phase + '/*.h5')))
+
+        
         if not filenames:
             raise RuntimeError('No filenames found in {}'.format(self.data_dir))
         filenames = shuffle_with_seed(filenames)
+        
+        
         return filenames
 
     def _filter_filenames(self, filenames):
         """Optionally filters filenames / limits to max number of filenames etc."""
+        
         if "n_seqs" in self.spec:
             # limit the max number of sequences in dataset
             if self.phase == "train" and len(filenames) < self.spec.n_seqs:
                 raise ValueError("Not enough seqs in dataset!")
             filenames = filenames[:self.spec.n_seqs]
+            
 
         if "seq_repeat" in self.spec:
             # repeat sequences in dataset
@@ -77,13 +92,28 @@ class Dataset(data.Dataset):
 class GlobalSplitDataset(Dataset):
     """Splits in train/val/test using global percentages."""
     def _get_filenames(self):
+        
+        # 87925
         filenames = self._load_h5_files(self.data_dir)
+        
+        with open("quantized_list_real.pickle","rb") as fr:
+            quantized_list_real = pickle.load(fr)
+        
+
 
         if not filenames:
             raise RuntimeError('No filenames found in {}'.format(self.data_dir))
+        
+        
         filenames = shuffle_with_seed(filenames)
+        quantized_list_real = shuffle_with_seed(quantized_list_real)
+        
+
+        # give identical split to quantized data as well
         filenames = self._split_with_percentage(self.spec.split, filenames)
-        return filenames
+        quantized_list_real = self._split_with_percentage(self.spec.split, quantized_list_real)
+        
+        return filenames, quantized_list_real
 
     def _load_h5_files(self, dir):
         filenames = []
@@ -113,34 +143,137 @@ class VideoDataset(Dataset):
         self.crop_subseq = 'crop_rand_subseq' in self.spec and self.spec.crop_rand_subseq
         self.img_sz = resolution
         self.subsampler = self._get_subsampler()
+        
+        ## Load pickle
+        with open("sorted_tokens_BPE_1000.pickle","rb") as fr:
+            self.sorted_tokens_BPE_1000 = pickle.load(fr)
 
     def __getitem__(self, index):
+        
+        
         data = self._get_raw_data(index)
-
-        # maybe subsample seqs
-        if self.subsampler is not None:
-            data = self._subsample_data(data)
+        
+        
+        quantized_data = self.quantized_list[index]
+        
+        #print(data.actions.shape)
+        #print(len(quantized_data))
+  
+        
+        # sample random subsequence of fixed length
+        assert self.randomize_length is True
+        
 
         # sample random subsequence of fixed length
-        if self.crop_subseq:
+        if self.randomize_length :
             end_ind = np.argmax(data.pad_mask * np.arange(data.pad_mask.shape[0], dtype=np.float32), 0)
-            data = self._crop_rand_subseq(data, end_ind, length=self.spec.subseq_len)
+            
+            
+            # np.random.randint does not include last index
+            start_idx = int(np.random.randint(0, data.actions.shape[0]-1, size=1))
+   
 
+            BPE_skill = self.BPE_function(quantized_data[start_idx:], self.sorted_tokens_BPE_1000)
+            
+
+
+            #print(data.actions.shape)
+            #print(len(quantized_data))
+            #print(quantized_data[start_idx:])
+            #print(BPE_skill)
+            #print(len(BPE_skill))
+
+            
+            if len(BPE_skill)==0 :
+                BPE_skill_len = 1
+                
+            elif len(BPE_skill)>=self.spec.max_seq_len :
+                BPE_skill_len = self.spec.max_seq_len
+                
+            else :
+                BPE_skill_len = len(BPE_skill)
+            
+            data = self._crop_rand_subseq(data, end_ind, length=BPE_skill_len)
+            
+            
         # Make length consistent
-        start_ind = 0
-        end_ind = np.argmax(data.pad_mask * np.arange(data.pad_mask.shape[0], dtype=np.float32), 0) \
-            if self.randomize_length or self.crop_subseq else self.spec.max_seq_len - 1
-        end_ind, data = self._sample_max_len_video(data, end_ind, target_len=self.spec.subseq_len if self.crop_subseq
-                                                                                  else self.spec.max_seq_len)
+        end_ind = np.argmax(data.pad_mask * np.arange(data.pad_mask.shape[0], dtype=np.float32), 0)
+        end_ind, data = self._sample_max_len_video(data, end_ind, target_len=self.spec.max_seq_len)
 
-        if self.randomize_length:
-            end_ind = self._randomize_length(start_ind, end_ind, data)
-            data.start_ind, data.end_ind = start_ind, end_ind
+
 
         # perform final processing on data
         data.images = self._preprocess_images(data.images)
 
+
+
+        # index of padded actions
+        # should be one smaller
+        mask_seq = np.zeros((self.spec.max_seq_len, 2))
+        
+        # where values present
+        mask_seq[:BPE_skill_len] = [1,1]
+        
+        data.action_mask = mask_seq
+
+ 
+
         return data
+
+
+
+    def BPE_function(self, quantized_data, BPE_dict) :
+
+        BPE_result = self.tokenize_word(string=quantized_data, sorted_tokens=BPE_dict, unknown_token='</u>')
+        
+        return BPE_result
+
+
+    # tokenize_word(string=word_given, sorted_tokens=sorted_tokens, unknown_token='</u>')
+    def tokenize_word(self, string, sorted_tokens, unknown_token='</u>'):
+        
+        if string == '':
+            return []
+        if sorted_tokens == []:
+            return [unknown_token]
+
+        string_tokens = []
+        
+        # sorted_tokens : [..., '63', '36', '84', '4', '5', '8', '3', '2', '6', '7', '1']
+        # sorted_tokens : ['newest</w>', 'widest</w>', 'lower</w>', 'low</w>']
+        # sorted_tokens[1500:] = length13
+        for i in range(len(sorted_tokens)):
+            token = sorted_tokens[i]
+
+            # token_reg = re.escape(token.replace('.', '[.]'))
+            
+
+            # [(1, 2), (4, 5)]
+            matched_positions = [(m.start(0), m.end(0)) for m in re.finditer(token, string)]
+            
+            
+            # 새로 입력받은 string과 sorted_tokens에 저장되어 있는 패턴들과 하나씩 대조한다
+            if len(matched_positions) == 0:
+                continue
+            
+            # [4]
+            substring_end_positions = [matched_position[0] for matched_position in matched_positions]
+            
+            substring_start_position = 0
+            for substring_end_position in substring_end_positions:
+                
+                # string의 시작 index와 찾은 pattern의 시작지점 사이의 substring에 대해서 재귀함수
+                # pattern의 시작지점과, 뒤에 pattern의 시작지점 사이의 substring에 대해서 재귀함수
+                # 이 때 각 재쉬함수들은 sorted_tokens[i+1:]을 사용한다. 즉 아직 대조하지 않은 pattern에 대해서만 실행
+                substring = string[substring_start_position:substring_end_position]
+            
+                break
+            break
+   
+        return substring
+
+
+
 
     def _get_raw_data(self, index):
         data = AttrDict()

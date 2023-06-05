@@ -8,6 +8,7 @@ data_spec = AttrDict(
     state_dim=4,
     split=AttrDict(train=0.9, val=0.1, test=0.0),
     res=32,
-    crop_rand_subseq=True,
+    #crop_rand_subseq=True,
+    randomize_length=True,
 )
-data_spec.max_seq_len = 300
+data_spec.max_seq_len = 30

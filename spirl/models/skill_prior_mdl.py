@@ -63,8 +63,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         default_dict.update({
             'state_dim': 1,             # dimensionality of the state space
             'action_dim': 1,            # dimensionality of the action space
-            'nz_enc': 32,               # number of dimensions in encoder-latent space
-            'nz_vae': 10,               # number of dimensions in vae-latent space
+            'nz_enc': 96,               # number of dimensions in encoder-latent space
+            'nz_vae': 30,               # number of dimensions in vae-latent space
             'nz_mid': 32,               # number of dimensions for internal feature spaces
             'nz_mid_lstm': 128,         # size of middle LSTM layers
             'n_lstm_layers': 1,         # number of LSTM layers
@@ -117,6 +117,7 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         """
         output = AttrDict()
         inputs.observations = inputs.actions    # for seamless evaluation
+        
 
         # run inference
         output.q = self._run_inference(inputs)
@@ -134,11 +135,13 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         output.z_q = output.z.clone() if not self._sample_prior else output.q.sample()   # for loss computation
 
         # decode
-        assert self._regression_targets(inputs).shape[1] == self._hp.n_rollout_steps
         output.reconstruction = self.decode(output.z,
                                             cond_inputs=self._learned_prior_input(inputs),
-                                            steps=self._hp.n_rollout_steps,
+                                            steps=self._regression_targets(inputs).shape[1],
                                             inputs=inputs)
+        
+
+        
         return output
 
     def loss(self, model_output, inputs):
@@ -148,7 +151,17 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         """
         losses = AttrDict()
 
+        inputs.action_mask = inputs.action_mask[:,:inputs.action_mask.shape[1]-2,:]
+
+        # zero pad for non-actions
+        model_output.reconstruction = model_output.reconstruction*inputs.action_mask
+
+
+
         # reconstruction loss, assume unit variance model output Gaussian
+        # The log-probability can be interpreted as a measure of the fit or goodness-of-fit between the data and the distribution.
+        # A higher log-probability indicates that the distribution provides a better explanation or prediction for the observed data.
+        # Conversely, a lower log-probability suggests that the distribution does not align well with the data.
         losses.rec_mse = NLL(self._hp.reconstruction_mse_weight) \
             (Gaussian(model_output.reconstruction, torch.zeros_like(model_output.reconstruction)),
              self._regression_targets(inputs))
